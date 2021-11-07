@@ -5,8 +5,8 @@ from flask.helpers import send_from_directory
 app = Flask(__name__, static_folder="frontend/build", static_url_path="")
 
 # comment out when building for server
-from flask_cors import CORS
-CORS(app)
+#from flask_cors import CORS
+#CORS(app)
 
 # Get the name from the url and return the output
 @app.route('/<string:name>',methods=['GET'])
