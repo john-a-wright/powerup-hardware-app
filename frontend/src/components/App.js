@@ -46,9 +46,9 @@ class App extends Component {
         return (
             <div className="App">
 
-                <header className="App-header">
-                    <p>Please enter first name</p>
-                </header>
+                <h1>
+                    PowerUp Hardware
+                </h1>
 
                 <header className="App-header">
                     <Container
@@ -62,7 +62,7 @@ class App extends Component {
                             <Router>
                                 <AuthProvider>
                                     <Switch>
-                                        <PrivateRoute exact path="/" component={Dashboard} />
+                                        <PrivateRoute exact path="/dashboard" component={Dashboard} />
                                         <PrivateRoute path="/update-profile" component={UpdateProfile} />
                                         <Route path="/signup" component={SignUp} />
                                         <Route path="/login" component={Login} />
