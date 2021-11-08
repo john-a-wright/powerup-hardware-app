@@ -57,7 +57,7 @@ class App extends Component {
                     >
                         <div
                             className="w-100"
-                            style={{ maxWidth: "400px" }}
+                            style={{ maxWidth: "450px" }}
                         >
                             <Router>
                                 <AuthProvider>
