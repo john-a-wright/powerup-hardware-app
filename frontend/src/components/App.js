@@ -50,7 +50,7 @@ class App extends Component {
                     PowerUp Hardware
                 </h1>
 
-                <header className="App-header">
+                <header>
                     <Container
                         className="d-flex align-items-center justify-content-center"
                         style={{ minHeight: "100vh" }}

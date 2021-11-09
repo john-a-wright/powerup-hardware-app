@@ -56,10 +56,11 @@ export default function SignUp() {
                     <Button disabled={loading} className="w-100" type="submit">Sign up</Button>
 
                 </Form>
+                <div className="w-100 text center mt-2">
+                    Already have an account? <Link to="/login">Log In</Link>
+                </div>
             </Card>
-            <div className="w-100 text center mt-2">
-                Already have an account? <Link to="/login">Log In</Link>
-            </div>
+            
         </>
     )
 }

@@ -38,6 +38,14 @@ export default function Dashboard() {
 
     return (
         <>
+            <div>
+                <h1>
+                    Current Hardware Sets:
+                </h1>
+                <p>
+                    {currentSets}
+                </p>
+            </div>
             <Card>
                 <Card.Body>
                     <h2 className="text-center mb-4">Profile</h2>
@@ -49,15 +57,6 @@ export default function Dashboard() {
             <div className="w-100 text center mt-2">
                 <Button variant="link" onClick={handleLogout}>Log Out</Button>
             </div>
-            <div>
-                <h1>
-                    Current Hardware Sets:
-                </h1>
-                <p>
-                    {currentSets}
-                </p>
-            </div>
-        
         </>
     )
 }
