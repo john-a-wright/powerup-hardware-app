@@ -9,9 +9,9 @@ app = Flask(__name__, static_folder="frontend/build", static_url_path="")
 #CORS(app)
 
 # Get the name from the url and return the output
-@app.route('/<string:name>',methods=['GET'])
-def output_name(name):  # put application's code here
-    if name=='John':
+@app.route('/api/dashboard/<string:name>', methods=['GET'])
+def output_name(name):
+    if name == 'John':
         return jsonify(
             status=200,
             message="Wright"
@@ -22,10 +22,19 @@ def output_name(name):  # put application's code here
             message="User Not Found"
         )
 
+# return hardware sets
+@app.route('/api/dashboard/hardware', methods=['GET'])
+def get_sets():
+    return jsonify(
+        status=200,
+        message="test hardware set"
+    )
+
 # Starting route for index
 @app.route("/")
 def index():
     return send_from_directory(app.static_folder, "index.html")
+
 
 if __name__ == '__main__':
     app.run(host="0.0.0.0")
