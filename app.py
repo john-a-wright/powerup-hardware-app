@@ -1,14 +1,16 @@
-from flask import Flask, jsonify
+#from flask_cors import CORS
+from flask import Flask, jsonify, request
 from flask.helpers import send_from_directory
 
 # Location for index.html
 app = Flask(__name__, static_folder="frontend/build", static_url_path="")
 
 # comment out when building for server
-#from flask_cors import CORS
 #CORS(app)
 
 # Get the name from the url and return the output
+
+
 @app.route('/api/dashboard/<string:name>', methods=['GET'])
 def output_name(name):
     if name == 'John':
@@ -29,6 +31,35 @@ def get_sets():
         status=200,
         message="test hardware set"
     )
+
+
+# return user projects
+@app.route('/api/dashboard/projects', methods=['GET'])
+def get_projects():
+    return jsonify(
+        status=200,
+        message="test project"
+    )
+
+
+# join project
+@app.route('/api/dashboard/projects/join', methods=['POST'])
+def join_projects():
+    try:
+        print(request.json)
+        id = request.json["projectid"]
+        user = request.json["user"]
+        print(f'user creating project with id: {id} by user: {user}')
+
+        return jsonify(
+            status=200,
+            message="joined project " + id + " by user " + user
+        )
+
+    except Exception as e:
+        print(e)
+        return str(e)
+
 
 # Starting route for index
 @app.route("/")
