@@ -44,7 +44,7 @@ class App extends Component {
 
     render() {
         return (
-            <div className="App">
+            <div>
 
                 <h1>
                     PowerUp Hardware
