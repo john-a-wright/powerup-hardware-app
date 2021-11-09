@@ -38,13 +38,9 @@ class App extends Component {
         this.getNames()
     }
 
-    /*componentDidMount() {
-        this.getNames();
-    }*/
-
     render() {
         return (
-            <div>
+            <div className="App">
 
                 <h1>
                     PowerUp Hardware
