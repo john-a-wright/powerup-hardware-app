@@ -11,11 +11,3 @@ export function Project(props) {
         </div>
     )
 }
-
-/*const Project = props =>
-        <div>
-            <h2>{props.name}</h2>
-            <p>ID: {props.id}</p>
-            <p>Description: {props.description}</p>
-            <p>(users and HWSets here in the future)</p>
-        </div>; */

@@ -59,10 +59,11 @@ export default function Dashboard() {
     };
 
     useEffect(() => {
+
         getCurrentSets();
         getUserProjects();
-    }, []);
 
+    }, []);
 
     // JOIN EXISTING PROJECT
     const joinRef = useRef()
@@ -104,9 +105,9 @@ export default function Dashboard() {
     // END JOIN EXISTING PROJECT
 
     // CREATE PROJECT
-    const createIDRef = useRef()
     const createNameRef = useRef()
     const createDescriptionRef = useRef()
+    const createIDRef = useRef()
     const [createError, setCreateError] = useState('')
     const [createLoading, setCreateLoading] = useState('')
     const [createMessage, setCreateMessage] = useState('')
@@ -114,12 +115,17 @@ export default function Dashboard() {
     function handleProjectCreating(e) {
         e.preventDefault() //prevent browser refreshing page
 
-        setJoinLoading(true);
-        const data = { projectid: joinRef.current.value, user: currentUser.email };
+        setCreateLoading(true);
+        const data = { 
+            name: createNameRef.current.value, 
+            description: createDescriptionRef.current.value,
+            id: createIDRef.current.value, 
+            user: currentUser.email 
+        };
         console.log(JSON.stringify(data))
 
         //POST request with body equal on data in JSON format
-        fetch(process.env.REACT_APP_URL_PREFIX + "/api/dashboard/projects/join", {
+        fetch(process.env.REACT_APP_URL_PREFIX + "/api/dashboard/projects/create", {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -129,17 +135,17 @@ export default function Dashboard() {
             .then((response) => response.json())
             //Then with the data from the response in JSON...
             .then((data) => {
-                setJoinError('');
+                setCreateError('');
                 console.log('Success:', data);
-                setJoinMessage('Successfully joined project');
+                setCreateMessage('Successfully create project');
             })
             //Then with the error genereted...
             .catch((error) => {
                 console.error('Error:', error);
-                setJoinError('Failed to join project');
+                setCreateError('Failed to create project');
             });
 
-        setJoinLoading(false)
+        setCreateLoading(false)
 
     }
 
@@ -254,12 +260,12 @@ export default function Dashboard() {
                                 {createMessage && <Alert variant="success">{createMessage}</Alert>}
                                 <Form onSubmit={handleProjectCreating}>
                                     <Form.Group id="create_project">
-                                        <Form.Label>Enter a project ID</Form.Label>
-                                        <Form.Control type="text" ref={createIDRef} required />
                                         <Form.Label>Enter a project name</Form.Label>
                                         <Form.Control type="text" ref={createNameRef} required />
                                         <Form.Label>Enter a project description</Form.Label>
                                         <Form.Control type="text" ref={createDescriptionRef} required />
+                                        <Form.Label>Enter a project ID</Form.Label>
+                                        <Form.Control type="text" ref={createIDRef} required />
                                         <Form.Label></Form.Label>
                                     </Form.Group>
                                     <Button disabled={createLoading} className="w-100" type="submit">Create project</Button>

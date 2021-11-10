@@ -3,6 +3,11 @@ from flask import Flask, jsonify, request
 from flask.helpers import send_from_directory
 
 from pymongo import MongoClient
+
+# DONT FORGET TO EDIT .ENV BEFORE NPM RUN BUILD
+
+# DONT NEED SSL FOR SERVER BUT DO NEED OS
+
 #import ssl
 import os
 
@@ -14,20 +19,30 @@ app = Flask(__name__, static_folder="frontend/build", static_url_path="")
 
 
 # Get MongoDB client
+
+# HEROKU
 mongo_uri = os.environ['MONGODB_URI']
-#mongo_uri = "mongodb+srv://powerup:fig@cluster0.oemnt.mongodb.net/powerup-hardware?retryWrites=true"
 mongoClient = MongoClient(mongo_uri)
+
+# CLIENT SIDE
+#mongo_uri = "mongodb+srv://powerup:fig@cluster0.oemnt.mongodb.net/powerup-hardware?retryWrites=true"
 #mongoClient = MongoClient(mongo_uri,ssl_cert_reqs=ssl.CERT_NONE)
 
-# Get HWSet1 database
+
+# Get database
 powerup_db = mongoClient.get_database('powerup-hardware')
+
+# Get HWSet1 collection
 hw_sets_col = powerup_db.get_collection("hw-sets")
 
-# Get projects database
-powerup_db = mongoClient.get_database('powerup-hardware')
+# Get projects collection
 projects_col = powerup_db.get_collection("projects")
 
+# Get global variables collection
+global_var_col = powerup_db.get_collection("global-variables")
 
+# define for the mongodb id that corresponds to the id counting variable
+project_id_counter_objectid = "618c24d098d337aed1695941"
 
 # Get the name from the url and return the output
 @app.route('/api/dashboard/<string:name>', methods=['GET'])
@@ -79,6 +94,44 @@ def get_projects(email):
         userProjects=projects
     )
 
+# create project
+@app.route('/api/dashboard/projects/create', methods=['POST'])
+def create_projects():
+    try:
+        print(request.json)
+
+        for p in projects_col.find():
+            if p["id"] == request.json["id"]:
+                return jsonify(
+                    status=-1,
+                    error="Project ID has already been used"
+                )
+
+        newProject = {
+            "id" : request.json["id"],
+            "name" : request.json["name"],
+            "description" : request.json["description"],
+            "checkedOutHW" : [],
+            "users" : [request.json["user"]]
+        }
+
+        #print(f'newProject: {newProject}')
+
+        projects_col.insert_one(newProject)
+        #print(projects_col.find_one({"id":request.json["id"]}))
+
+        user = request.json["user"]
+        id = str(request.json["id"])
+        print(f'created project with id: {id} by user: {user}')
+
+        return jsonify(
+            status=200,
+            newlyCreatedProject = newProject
+        )
+
+    except Exception as e:
+        print(e)
+        return str(e)
 
 # join project
 @app.route('/api/dashboard/projects/join', methods=['POST'])
@@ -87,7 +140,7 @@ def join_projects():
         print(request.json)
         id = request.json["projectid"]
         user = request.json["user"]
-        print(f'user creating project with id: {id} by user: {user}')
+        print(f'user joining project with id: {id} by user: {user}')
 
         return jsonify(
             status=200,
@@ -100,7 +153,7 @@ def join_projects():
 
 
 # Starting route for index
-@app.route("/")
+@app.route("/*")
 def index():
     return send_from_directory(app.static_folder, "index.html")
 
