@@ -3,6 +3,7 @@ import { Form, Card, Button, Alert } from 'react-bootstrap'
 import { useAuth } from '../contexts/AuthContext'
 import { Link, useHistory } from 'react-router-dom'
 import { Container } from 'react-bootstrap'
+import { Project } from './Project'
 
 export default function Dashboard() {
 
@@ -16,6 +17,12 @@ export default function Dashboard() {
     const loopHWSets = (jsondata) => {
         for (const [index, value] of jsondata["message"].entries()){
             setCurrentSets(currentSets => [...currentSets, value])
+        }
+    }
+
+    const displayProjects = (jsondata) => {
+        for (const [index, value] of jsondata["userProjects"].entries()){
+            setUserProjects(userProjects => [...userProjects, value])
         }
     }
 
@@ -41,11 +48,11 @@ export default function Dashboard() {
     };
 
     const getUserProjects = () => {
-        const url = process.env.REACT_APP_URL_PREFIX + "/api/dashboard/projects";
+        const url = process.env.REACT_APP_URL_PREFIX + "/api/dashboard/projects/" + currentUser.email;
         console.log(url);
         fetch(url)
             .then((response) => response.json())
-            .then((jsondata) => setUserProjects(jsondata["message"]))
+            .then((jsondata) => displayProjects(jsondata))
             .catch((err) => {
                 console.log(err);
             });
@@ -178,7 +185,7 @@ export default function Dashboard() {
 
     }
 
-    // END CHECKOUT
+    // END CHECKOUT name={project.name} id={project.id} description={project.description}
 
 
     return (
@@ -188,9 +195,15 @@ export default function Dashboard() {
                 <h1>
                     Your projects:
                 </h1>
-                <p>
-                    {userProjects}
-                </p>
+                {userProjects.map(project => (
+                    <Project key={project.id} 
+                    name={project.name} 
+                    id={project.id} 
+                    description={project.description} 
+                    HWSets={project.checkedOutHW} 
+                    users={project.users}/>
+                ))}
+
             </div>
 
             <div>
