@@ -1,4 +1,4 @@
-#from flask_cors import CORS
+from flask_cors import CORS
 from flask import Flask, jsonify, request
 from flask.helpers import send_from_directory
 
@@ -6,7 +6,7 @@ from flask.helpers import send_from_directory
 app = Flask(__name__, static_folder="frontend/build", static_url_path="")
 
 # comment out when building for server
-#CORS(app)
+CORS(app)
 
 # Get the name from the url and return the output
 

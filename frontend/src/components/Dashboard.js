@@ -28,7 +28,7 @@ export default function Dashboard() {
         console.log(url);
         fetch(url)
             .then((response) => response.json())
-            .then((jsondata) => setCurrentSets(jsondata["message"]))
+            .then((jsondata) => setCurrentSets([ ...currentSets, jsondata["message"]]))
             .catch((err) => {
                 console.log(err);
             });
@@ -50,16 +50,18 @@ export default function Dashboard() {
         getUserProjects();
     }, []);
 
+
+    // JOIN EXISTING PROJECT
     const joinRef = useRef()
     const [joinError, setJoinError] = useState('')
-    const [loading, setLoading] = useState('')
+    const [joinLoading, setJoinLoading] = useState('')
     const [joinMessage, setJoinMessage] = useState('')
 
     function handleProjectJoining(e) {
         e.preventDefault() //prevent browser refreshing page
 
-        setLoading(true);
-        const data = { projectid: joinRef.current.value, user: currentUser.email};
+        setJoinLoading(true);
+        const data = { projectid: joinRef.current.value, user: currentUser.email };
         console.log(JSON.stringify(data))
 
         //POST request with body equal on data in JSON format
@@ -68,24 +70,110 @@ export default function Dashboard() {
             headers: {
                 'Content-Type': 'application/json',
             },
-                body: JSON.stringify(data),
-            })
-        .then((response) => response.json())
-        //Then with the data from the response in JSON...
-        .then((data) => {
-            setJoinError('');
-            console.log('Success:', data);
-            setJoinMessage('Successfully joined project');
+            body: JSON.stringify(data),
         })
-        //Then with the error genereted...
-        .catch((error) => {
-            console.error('Error:', error);
-            setJoinError('Failed to join project');
-        });
+            .then((response) => response.json())
+            //Then with the data from the response in JSON...
+            .then((data) => {
+                setJoinError('');
+                console.log('Success:', data);
+                setJoinMessage('Successfully joined project');
+            })
+            //Then with the error genereted...
+            .catch((error) => {
+                console.error('Error:', error);
+                setJoinError('Failed to join project');
+            });
 
-        setLoading(false)
+        setJoinLoading(false)
 
     }
+    // END JOIN EXISTING PROJECT
+
+    // CREATE PROJECT
+    const createIDRef = useRef()
+    const createNameRef = useRef()
+    const createDescriptionRef = useRef()
+    const [createError, setCreateError] = useState('')
+    const [createLoading, setCreateLoading] = useState('')
+    const [createMessage, setCreateMessage] = useState('')
+
+    function handleProjectCreating(e) {
+        e.preventDefault() //prevent browser refreshing page
+
+        setJoinLoading(true);
+        const data = { projectid: joinRef.current.value, user: currentUser.email };
+        console.log(JSON.stringify(data))
+
+        //POST request with body equal on data in JSON format
+        fetch(process.env.REACT_APP_URL_PREFIX + "/api/dashboard/projects/join", {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(data),
+        })
+            .then((response) => response.json())
+            //Then with the data from the response in JSON...
+            .then((data) => {
+                setJoinError('');
+                console.log('Success:', data);
+                setJoinMessage('Successfully joined project');
+            })
+            //Then with the error genereted...
+            .catch((error) => {
+                console.error('Error:', error);
+                setJoinError('Failed to join project');
+            });
+
+        setJoinLoading(false)
+
+    }
+
+    // END CREATE PROJECT
+
+    // CHECKOUT
+    const checkoutIDRef = useRef()
+    const checkoutNameRef = useRef()
+    const checkoutAmmountRef = useRef()
+    const [checkoutError, setCheckoutError] = useState('')
+    const [checkoutLoading, setCheckoutLoading] = useState('')
+    const [checkoutMessage, setCheckoutMessage] = useState('')
+
+    function handleCheckout(e) {
+        e.preventDefault() //prevent browser refreshing page
+
+        setJoinLoading(true);
+        const data = { projectid: joinRef.current.value, user: currentUser.email };
+        console.log(JSON.stringify(data))
+
+        //POST request with body equal on data in JSON format
+        fetch(process.env.REACT_APP_URL_PREFIX + "/api/dashboard/projects/join", {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(data),
+        })
+            .then((response) => response.json())
+            //Then with the data from the response in JSON...
+            .then((data) => {
+                setJoinError('');
+                console.log('Success:', data);
+                setJoinMessage('Successfully joined project');
+            })
+            //Then with the error genereted...
+            .catch((error) => {
+                console.error('Error:', error);
+                setJoinError('Failed to join project');
+            });
+
+        setJoinLoading(false)
+
+    }
+
+    // END CHECKOUT
+
 
     return (
         <>
@@ -100,9 +188,6 @@ export default function Dashboard() {
             </div>
 
             <div>
-                <h1>
-                    Join a project:
-                </h1>
 
                 <Container
                     className="d-flex align-items-center justify-content-center"
@@ -114,15 +199,51 @@ export default function Dashboard() {
                     >
                         <Card>
                             <Card.Body>
-                                <h2 className="text-center mb-4">Enter Project ID</h2>
+                                <h2 className="text-center mb-4">Join project</h2>
                                 {joinError && <Alert variant="danger">{joinError}</Alert>}
                                 {joinMessage && <Alert variant="success">{joinMessage}</Alert>}
                                 <Form onSubmit={handleProjectJoining}>
-                                    <Form.Group id="project_id">
-                                        <Form.Label>Project ID</Form.Label>
+                                    <Form.Group id="join_project">
+                                        <Form.Label>Enter project ID</Form.Label>
                                         <Form.Control type="text" ref={joinRef} required />
+                                        <Form.Label></Form.Label>
                                     </Form.Group>
-                                    <Button disabled={loading} className="w-100" type="submit">Join Project</Button>
+                                    <Button disabled={joinLoading} className="w-100" type="submit">Join Project</Button>
+                                </Form>
+
+                            </Card.Body>
+                        </Card>
+                    </div>
+                </Container>
+
+            </div>
+
+            <div>
+
+                <Container
+                    className="d-flex align-items-center justify-content-center"
+                    style={{ minHeight: "25vh" }}
+                >
+                    <div
+                        className="w-100"
+                        style={{ maxWidth: "450px" }}
+                    >
+                        <Card>
+                            <Card.Body>
+                                <h2 className="text-center mb-4">Create project</h2>
+                                {createError && <Alert variant="danger">{createError}</Alert>}
+                                {createMessage && <Alert variant="success">{createMessage}</Alert>}
+                                <Form onSubmit={handleProjectCreating}>
+                                    <Form.Group id="create_project">
+                                        <Form.Label>Enter a project ID</Form.Label>
+                                        <Form.Control type="text" ref={createIDRef} required />
+                                        <Form.Label>Enter a project name</Form.Label>
+                                        <Form.Control type="text" ref={createNameRef} required />
+                                        <Form.Label>Enter a project description</Form.Label>
+                                        <Form.Control type="text" ref={createDescriptionRef} required />
+                                        <Form.Label></Form.Label>
+                                    </Form.Group>
+                                    <Button disabled={createLoading} className="w-100" type="submit">Create project</Button>
                                 </Form>
 
                             </Card.Body>
@@ -133,28 +254,53 @@ export default function Dashboard() {
             </div>
 
 
-            <div>
-                <h1>
-                    Create a project:
-                </h1>
-
-
-            </div>
-
-
 
 
             <div>
                 <h1>
-                    Current Hardware Sets:
+                    Available Hardware Sets:
                 </h1>
                 <p>
                     {currentSets}
                 </p>
+
             </div>
 
 
+            <div>
 
+                <Container
+                    className="d-flex align-items-center justify-content-center"
+                    style={{ minHeight: "25vh" }}
+                >
+                    <div
+                        className="w-100"
+                        style={{ maxWidth: "450px" }}
+                    >
+                        <Card>
+                            <Card.Body>
+                                <h2 className="text-center mb-4">Checkout hardware</h2>
+                                {checkoutError && <Alert variant="danger">{checkoutError}</Alert>}
+                                {checkoutMessage && <Alert variant="success">{checkoutMessage}</Alert>}
+                                <Form onSubmit={handleCheckout}>
+                                    <Form.Group id="checkout">
+                                        <Form.Label>Enter a project ID</Form.Label>
+                                        <Form.Control type="text" ref={checkoutIDRef} required />
+                                        <Form.Label>Enter a hardware set name</Form.Label>
+                                        <Form.Control type="text" ref={checkoutNameRef} required />
+                                        <Form.Label>Enter an ammount</Form.Label>
+                                        <Form.Control type="text" ref={checkoutAmmountRef} required />
+                                        <Form.Label></Form.Label>
+                                    </Form.Group>
+                                    <Button disabled={checkoutLoading} className="w-100" type="submit">Checkout</Button>
+                                </Form>
+
+                            </Card.Body>
+                        </Card>
+                    </div>
+                </Container>
+
+            </div>
 
 
 
