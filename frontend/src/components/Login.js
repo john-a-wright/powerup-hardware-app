@@ -3,6 +3,7 @@ import { Form, Button, Card, Alert } from 'react-bootstrap'
 import { useAuth } from '../contexts/AuthContext'
 import { Link, useHistory } from 'react-router-dom'
 import { Container } from 'react-bootstrap'
+import './App.css';
 
 export default function Login() {
 
@@ -33,14 +34,14 @@ export default function Login() {
             <header>
                 <Container
                     className="d-flex align-items-center justify-content-center"
-                    style={{ minHeight: "100vh" }}
+                    style={{ minHeight: "91vh" }}
                 >
                     <div
                         className="w-100"
                         style={{ maxWidth: "450px" }}
                     >
 
-                        <Card>
+                        <Card className="container-darkmode">
                             <Card.Body>
                                 <h2 className="text-center mb-4">Log In</h2>
                                 {error && <Alert variant="danger">{error}</Alert>}
@@ -52,6 +53,7 @@ export default function Login() {
                                     <Form.Group id="password">
                                         <Form.Label>Password</Form.Label>
                                         <Form.Control type="password" ref={passwordRef} required />
+                                        <Form.Label></Form.Label>
                                     </Form.Group>
 
                                     <Button disabled={loading} className="w-100" type="submit">Log In</Button>
@@ -64,10 +66,10 @@ export default function Login() {
                             </Card.Body>
                         </Card>
 
-                        <div className="w-100 text center mt-2">
+                        <div className="w-100 text center mt-2 white-font">
                             Need an account? <Link to="/signup">Sign Up</Link>
                         </div>
-                        
+
                     </div>
                 </Container>
             </header>

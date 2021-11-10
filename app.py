@@ -29,7 +29,7 @@ def output_name(name):
 def get_sets():
     return jsonify(
         status=200,
-        message="test hardware set"
+        message=["test hardware set 1","test hardware set 2"]
     )
 
 

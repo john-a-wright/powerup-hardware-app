@@ -10,8 +10,14 @@ export default function Dashboard() {
     const { currentUser, logout } = useAuth()
     const { history } = useHistory()
 
-    const [currentSets, setCurrentSets] = React.useState("");
-    const [userProjects, setUserProjects] = React.useState("");
+    const [currentSets, setCurrentSets] = useState([]);
+    const [userProjects, setUserProjects] = useState([]);
+
+    const loopHWSets = (jsondata) => {
+        for (const [index, value] of jsondata["message"].entries()){
+            setCurrentSets(currentSets => [...currentSets, value])
+        }
+    }
 
     async function handleLogout() {
         setError('')
@@ -28,7 +34,7 @@ export default function Dashboard() {
         console.log(url);
         fetch(url)
             .then((response) => response.json())
-            .then((jsondata) => setCurrentSets([ ...currentSets, jsondata["message"]]))
+            .then((jsondata) => loopHWSets(jsondata))
             .catch((err) => {
                 console.log(err);
             });
@@ -178,7 +184,7 @@ export default function Dashboard() {
     return (
         <>
 
-            <div>
+            <div className="white-font">
                 <h1>
                     Your projects:
                 </h1>
@@ -256,7 +262,7 @@ export default function Dashboard() {
 
 
 
-            <div>
+            <div className="white-font">
                 <h1>
                     Available Hardware Sets:
                 </h1>

@@ -41,7 +41,7 @@ class App extends Component {
         return (
             <div className="App">
 
-                <h1>
+                <h1 className="gradient-text">
                     PowerUp Hardware
                 </h1>
                 <Router>
