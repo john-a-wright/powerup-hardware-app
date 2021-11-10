@@ -2,15 +2,29 @@ from flask_cors import CORS
 from flask import Flask, jsonify, request
 from flask.helpers import send_from_directory
 
+from pymongo import MongoClient
+import ssl
+import os
+
 # Location for index.html
 app = Flask(__name__, static_folder="frontend/build", static_url_path="")
 
 # comment out when building for server
 CORS(app)
 
+
+# Get MongoDB client
+#mongo_uri = os.environ['MONGODB_URI']
+mongo_uri = "mongodb+srv://powerup:fig@cluster0.oemnt.mongodb.net/powerup-hardware?retryWrites=true"
+mongoClient = MongoClient(mongo_uri,ssl_cert_reqs=ssl.CERT_NONE)
+
+# Get HWSet1 database
+powerup_db = mongoClient.get_database('powerup-hardware')
+hw_sets_col = powerup_db.get_collection("hw-sets")
+
+
+
 # Get the name from the url and return the output
-
-
 @app.route('/api/dashboard/<string:name>', methods=['GET'])
 def output_name(name):
     if name == 'John':
@@ -27,10 +41,13 @@ def output_name(name):
 # return hardware sets
 @app.route('/api/dashboard/hardware', methods=['GET'])
 def get_sets():
+    set1 = hw_sets_col.find_one({"name": "set1"})
+    print('SHOULD BE NAME HERE: ' + set1['name'])
     return jsonify(
         status=200,
-        message=["test hardware set 1","test hardware set 2"]
+        message=[set1['name']]
     )
+
 
 
 # return user projects
