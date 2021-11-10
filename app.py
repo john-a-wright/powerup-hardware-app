@@ -3,8 +3,8 @@ from flask import Flask, jsonify, request
 from flask.helpers import send_from_directory
 
 from pymongo import MongoClient
-import ssl
-#import os
+#import ssl
+import os
 
 # Location for index.html
 app = Flask(__name__, static_folder="frontend/build", static_url_path="")
@@ -14,10 +14,10 @@ app = Flask(__name__, static_folder="frontend/build", static_url_path="")
 
 
 # Get MongoDB client
-#mongo_uri = os.environ['MONGODB_URI']
-mongo_uri = "mongodb+srv://powerup:fig@cluster0.oemnt.mongodb.net/powerup-hardware?retryWrites=true"
-#mongoClient = MongoClient(mongo_uri)
-mongoClient = MongoClient(mongo_uri,ssl_cert_reqs=ssl.CERT_NONE)
+mongo_uri = os.environ['MONGODB_URI']
+#mongo_uri = "mongodb+srv://powerup:fig@cluster0.oemnt.mongodb.net/powerup-hardware?retryWrites=true"
+mongoClient = MongoClient(mongo_uri)
+#mongoClient = MongoClient(mongo_uri,ssl_cert_reqs=ssl.CERT_NONE)
 
 # Get HWSet1 database
 powerup_db = mongoClient.get_database('powerup-hardware')
