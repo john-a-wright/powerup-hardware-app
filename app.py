@@ -216,7 +216,7 @@ def index():
     return send_from_directory(app.static_folder, "index.html")
 
 @app.route("/dashboard")
-def index():
+def index_other():
     return send_from_directory(app.static_folder, "index.html")
 
 
