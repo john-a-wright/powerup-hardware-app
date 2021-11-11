@@ -344,9 +344,63 @@ export default function Dashboard() {
 
             </div>
 
+            <div>
+                <Container
+                    className="align-items-center justify-content-center"
+                    style={{ minHeight: "25vh" }}
+                >
+                    <h3 className="white-font">
+                        Blood Pressure in Salt-Sensitive Dahl Rats
+                    </h3>
+                    <p className="white-font">This database contains continuous blood pressure recordings for 9 Dahl SS rats and 6 Dahl SS.13BN rats, under high and low salt conditions.</p>
+                    <p className="white-font">
+                        <a href="https://physionet.org/static/published-projects/bpssrat/blood-pressure-in-salt-sensitive-dahl-rats-1.0.0.zip">
+                            Download (3.4MB)
+                        </a>
+                    </p>    
 
+                    <h3 className="white-font">
+                        Gait in Aging and Disease Database
+                    </h3>
+                    <p className="white-font">Walking stride interval time series from 15 subjects.</p>
+                    <p className="white-font">
+                        <a href="https://physionet.org/static/published-projects/gaitdb/gait-in-aging-and-disease-database-1.0.0.zip">
+                            Download (354.6KB)
+                        </a>
+                    </p>
+                    
+                    <h3 className="white-font">
+                        Long Term AF Database
+                    </h3>
+                    <p className="white-font">This database includes 84 long-term ECG recordings of subjects with paroxysmal or sustained atrial fibrillation (AF). Each record contains two simultaneously recorded ECG signals digitized at 128 Hz …</p>
+                    <p className="white-font">
+                        <a href="https://physionet.org/static/published-projects/ltafdb/long-term-af-database-1.0.0.zip">
+                            Download (1.7GB)
+                        </a>
+                    </p>
 
+                    <h3 className="white-font">
+                        MIT-BIH Arrhythmia Database
+                    </h3>
+                    <p className="white-font">Two-channel ambulatory ECG recordings, obtained from 47 subjects studied by the BIH Arrhythmia Laboratory between 1975 and 1979. </p>
+                    <p className="white-font">
+                        <a href="https://physionet.org/static/published-projects/mitdb/mit-bih-arrhythmia-database-1.0.0.zip">
+                            Download (73.5MB)
+                        </a>
+                    </p>
 
+                    <h3 className="white-font">
+                        MMG Database
+                    </h3>
+                    <p className="white-font">Uterine magnetomyographic signals from 25 subjects recorded using a 151 channel Reproductive Assessment system.</p>
+                    <p className="white-font">
+                        <a href="https://physionet.org/static/published-projects/mmgdb/mmg-database-1.0.0.zip">
+                            Download (215.7MB)
+                        </a>
+                    </p>
+
+                </Container>
+            </div>
 
             <header>
                 <Container
