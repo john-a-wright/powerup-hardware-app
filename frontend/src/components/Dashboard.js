@@ -193,7 +193,10 @@ export default function Dashboard() {
 
     // END CHECKOUT name={project.name} id={project.id} description={project.description}
 
-
+    /*  first two database links have rewritten descriptions in case plagiarism is a concern? doubtful; here are the originals
+        This database contains continuous blood pressure recordings for 9 Dahl SS rats and 6 Dahl SS.13BN rats, under high and low salt conditions. 
+        Walking stride interval time series from 15 subjects. */
+    
     return (
         <>
 
@@ -313,7 +316,7 @@ export default function Dashboard() {
                                         <Form.Control type="text" ref={checkoutIDRef} required />
                                         <Form.Label>Enter a hardware set name</Form.Label>
                                         <Form.Control type="text" ref={checkoutNameRef} required />
-                                        <Form.Label>Enter an ammount</Form.Label>
+                                        <Form.Label>Enter an amount</Form.Label>
                                         <Form.Control type="text" ref={checkoutAmmountRef} required />
                                         <Form.Label></Form.Label>
                                     </Form.Group>
@@ -326,8 +329,64 @@ export default function Dashboard() {
                 </Container>
 
             </div>
+            
+            <div>
+                <Container
+                    className="align-items-center justify-content-center"
+                    style={{ minHeight: "25vh" }}
+                >
+                    <h3 class="white-font">
+                        Blood Pressure in Salt-Sensitive Dahl Rats
+                    </h3>
+                    <p class="white-font">This database contains continuous blood pressure recordings for 9 Dahl SS rats and 6 Dahl SS.13BN rats, under high and low salt conditions.</p>
+                    <p class="white-font">
+                        <a href="https://physionet.org/static/published-projects/bpssrat/blood-pressure-in-salt-sensitive-dahl-rats-1.0.0.zip">
+                            Download (3.4MB)
+                        </a>
+                    </p>    
 
+                    <h3 class="white-font">
+                        Gait in Aging and Disease Database
+                    </h3>
+                    <p class="white-font">Walking stride interval time series from 15 subjects.</p>
+                    <p class="white-font">
+                        <a href="https://physionet.org/static/published-projects/gaitdb/gait-in-aging-and-disease-database-1.0.0.zip">
+                            Download (354.6KB)
+                        </a>
+                    </p>
+                    
+                    <h3 class="white-font">
+                        Long Term AF Database
+                    </h3>
+                    <p class="white-font">This database includes 84 long-term ECG recordings of subjects with paroxysmal or sustained atrial fibrillation (AF). Each record contains two simultaneously recorded ECG signals digitized at 128 Hz …</p>
+                    <p class="white-font">
+                        <a href="https://physionet.org/static/published-projects/ltafdb/long-term-af-database-1.0.0.zip">
+                            Download (1.7GB)
+                        </a>
+                    </p>
 
+                    <h3 class="white-font">
+                        MIT-BIH Arrhythmia Database
+                    </h3>
+                    <p class="white-font">Two-channel ambulatory ECG recordings, obtained from 47 subjects studied by the BIH Arrhythmia Laboratory between 1975 and 1979. </p>
+                    <p class="white-font">
+                        <a href="https://physionet.org/static/published-projects/mitdb/mit-bih-arrhythmia-database-1.0.0.zip">
+                            Download (73.5MB)
+                        </a>
+                    </p>
+
+                    <h3 class="white-font">
+                        MMG Database
+                    </h3>
+                    <p class="white-font">Uterine magnetomyographic signals from 25 subjects recorded using a 151 channel Reproductive Assessment system.</p>
+                    <p class="white-font">
+                        <a href="https://physionet.org/static/published-projects/mmgdb/mmg-database-1.0.0.zip">
+                            Download (215.7MB)
+                        </a>
+                    </p>
+
+                </Container>
+            </div>
 
 
 
