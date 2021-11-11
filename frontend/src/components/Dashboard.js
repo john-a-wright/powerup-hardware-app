@@ -27,6 +27,50 @@ export default function Dashboard() {
         }
     }
 
+    const updateSet = (data) => {
+        var i;
+        var j;
+        var updatedSets = [];
+        for (i = 0; i < currentSets.length; i++) {
+            if(currentSets[i].name === data["newSet"]["name"]){
+                //found hwset in state array: loop back thru
+                for (j = 0; j < currentSets.length; j++) {
+                    if(j === i){
+                        var setToBeUpdated = currentSets[i]
+                        setToBeUpdated.availability = data["newSet"]["availability"]
+
+                        updatedSets.push(setToBeUpdated)
+                    }else{
+                        updatedSets.push(currentSets[j])
+                    }
+                }
+            }
+        }
+        setCurrentSets(updatedSets)
+    }
+
+    const updateProject = (data) => {
+        var i;
+        var j;
+        var updatedProjects = [];
+        for (i = 0; i < userProjects.length; i++) {
+            if(userProjects[i].id === data["newProject"]["id"]){
+                //found project in state array: loop back thru
+                for (j = 0; j < userProjects.length; j++) {
+                    if(j === i){
+                        var projectToBeUpdated = userProjects[i]
+                        projectToBeUpdated.checkedOutHW = data["newProject"]["checkedOutHW"]
+
+                        updatedProjects.push(projectToBeUpdated)
+                    }else{
+                        updatedProjects.push(userProjects[j])
+                    }
+                }
+            }
+        }
+        setUserProjects(updatedProjects)
+    }
+
     async function handleLogout() {
         setError('')
         try {
@@ -176,7 +220,7 @@ export default function Dashboard() {
     // CHECKOUT
     const checkoutIDRef = useRef()
     const checkoutNameRef = useRef()
-    const checkoutAmmountRef = useRef()
+    const checkoutAmountRef = useRef()
     const [checkoutError, setCheckoutError] = useState('')
     const [checkoutLoading, setCheckoutLoading] = useState('')
     const [checkoutMessage, setCheckoutMessage] = useState('')
@@ -188,7 +232,7 @@ export default function Dashboard() {
         const data = { 
             id: checkoutIDRef.current.value, 
             hwset: checkoutNameRef.current.value, 
-            ammount: checkoutAmmountRef.current.value, 
+            amount: checkoutAmountRef.current.value, 
             user: currentUser.email 
         };
         console.log(JSON.stringify(data))
@@ -205,7 +249,17 @@ export default function Dashboard() {
             //Then with the data from the response in JSON...
             .then((data) => {
                 setCheckoutError('');
-                console.log('Success:', data);
+                console.log('Success network-wise:', data);
+
+                if (data["status"] === -1) {
+                    setCheckoutMessage('');
+                    setCheckoutError(data["error"]);
+                    return;
+                }
+                
+                updateSet(data);
+                updateProject(data);
+
                 setCheckoutMessage('Successfully checked out hardware');
             })
             //Then with the error generated...
@@ -224,7 +278,7 @@ export default function Dashboard() {
     // CHECKIN
     const checkinIDRef = useRef()
     const checkinNameRef = useRef()
-    const checkinAmmountRef = useRef()
+    const checkinAmountRef = useRef()
     const [checkinError, setCheckinError] = useState('')
     const [checkinLoading, setCheckinLoading] = useState('')
     const [checkinMessage, setCheckinMessage] = useState('')
@@ -233,11 +287,16 @@ export default function Dashboard() {
         e.preventDefault() //prevent browser refreshing page
 
         setCheckinLoading(true);
-        const data = { projectid: joinRef.current.value, user: currentUser.email };
+        const data = { 
+            id: checkinIDRef.current.value, 
+            hwset: checkinNameRef.current.value, 
+            amount: checkinAmountRef.current.value, 
+            user: currentUser.email 
+        };
         console.log(JSON.stringify(data))
 
         //POST request with body equal on data in JSON format
-        fetch(process.env.REACT_APP_URL_PREFIX + "/api/dashboard/projects/join", {
+        fetch(process.env.REACT_APP_URL_PREFIX + "/api/dashboard/hardware/checkin", {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -248,14 +307,24 @@ export default function Dashboard() {
             //Then with the data from the response in JSON...
             .then((data) => {
                 setCheckinError('');
-                console.log('Success:', data);
-                setCheckinMessage('Successfully joined project');
+                console.log('Success network-wise:', data);
+
+                if (data["status"] === -1) {
+                    setCheckinMessage('');
+                    setCheckinError(data["error"]);
+                    return;
+                }
+                
+                //updateSet(data);
+                //updateProject(data);
+
+                setCheckinMessage('Successfully checked in hardware');
             })
             //Then with the error genereted...
             .catch((error) => {
                 console.error('Error:', error);
                 setCheckinMessage('');
-                setCheckinError('Failed to join project');
+                setCheckinError('Failed to check in hardware');
             });
 
         setCheckinLoading(false)
@@ -392,8 +461,8 @@ export default function Dashboard() {
                                                 <Form.Control type="text" ref={checkoutIDRef} required />
                                                 <Form.Label>Enter a hardware set name</Form.Label>
                                                 <Form.Control type="text" ref={checkoutNameRef} required />
-                                                <Form.Label>Enter an ammount</Form.Label>
-                                                <Form.Control type="text" ref={checkoutAmmountRef} required />
+                                                <Form.Label>Enter an amount</Form.Label>
+                                                <Form.Control type="text" ref={checkoutAmountRef} required />
                                                 <Form.Label></Form.Label>
                                             </Form.Group>
                                             <Button disabled={checkoutLoading} className="w-100" type="submit">Checkout</Button>
@@ -423,8 +492,8 @@ export default function Dashboard() {
                                                 <Form.Control type="text" ref={checkinIDRef} required />
                                                 <Form.Label>Enter a hardware set name</Form.Label>
                                                 <Form.Control type="text" ref={checkinNameRef} required />
-                                                <Form.Label>Enter an ammount</Form.Label>
-                                                <Form.Control type="text" ref={checkinAmmountRef} required />
+                                                <Form.Label>Enter an amount</Form.Label>
+                                                <Form.Control type="text" ref={checkinAmountRef} required />
                                                 <Form.Label></Form.Label>
                                             </Form.Group>
                                             <Button disabled={checkinLoading} className="w-100" type="submit">Checkin</Button>

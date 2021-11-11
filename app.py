@@ -1,4 +1,4 @@
-#from flask_cors import CORS
+from flask_cors import CORS
 from flask import Flask, jsonify, request
 from flask.helpers import send_from_directory
 
@@ -8,25 +8,25 @@ from pymongo import MongoClient
 
 # DONT NEED SSL FOR SERVER BUT DO NEED OS
 
-#import ssl
-import os
+import ssl
+#import os
 
 # Location for index.html
 app = Flask(__name__, static_folder="frontend/build", static_url_path="")
 
 # comment out when building for server
-#CORS(app)
+CORS(app)
 
 
 # Get MongoDB client
 
 # HEROKU
-mongo_uri = os.environ['MONGODB_URI']
-mongoClient = MongoClient(mongo_uri)
+#mongo_uri = os.environ['MONGODB_URI']
+#mongoClient = MongoClient(mongo_uri)
 
 # CLIENT SIDE
-#mongo_uri = "mongodb+srv://powerup:fig@cluster0.oemnt.mongodb.net/powerup-hardware?retryWrites=true"
-#mongoClient = MongoClient(mongo_uri,ssl_cert_reqs=ssl.CERT_NONE)
+mongo_uri = "mongodb+srv://powerup:fig@cluster0.oemnt.mongodb.net/powerup-hardware?retryWrites=true"
+mongoClient = MongoClient(mongo_uri,ssl_cert_reqs=ssl.CERT_NONE)
 
 
 # Get database
@@ -67,33 +67,182 @@ def checkout_hwset():
     try:
         print(request.json)
 
+        userEmail = request.json["user"]
+
         # make sure project exits
+        for p in projects_col.find():
+            if int(p["id"]) == int(request.json["id"]):
+                for user in p["users"]:
+                    if user == userEmail:
+                        # found project and user is joined
 
-        for set in hw_sets_col.find():
-            if set["name"] == request.json["hwset"]: 
-                print(f'hwset found: {set}')
+                        id = int(request.json["id"])
+                        hwset_name = request.json["hwset"]
+                        amount = int(request.json["amount"])
 
-                # make sure the quantity is actually available
+                        # make sure hardware set exists
+                        for set in hw_sets_col.find():
+                            if set["name"] == hwset_name: 
+                                print(f'hwset found: {set}')
 
-                # figure out how to update the hardware set and project on client => useEffect probably
+                                # make sure the quantity is actually available
+                                if (amount > set["availability"] or amount > set["capacity"]):
+                                    return jsonify(
+                                        status=-1,
+                                        error="No availability for the amount requested"
+                                    )
 
-                returnedSet = set
-                returnedSet.pop("_id")
+                                newAvailability = int(set["availability"]) - amount
 
+                                hw_sets_col.update_one({ "name" : set["name"] },{ "$set": { "availability": newAvailability } })
+
+                                updatingProject = projects_col.find_one({ "id" : request.json["id"] })
+                                newCheckedOutHW = updatingProject["checkedOutHW"]
+
+                                found = False
+                                for set in newCheckedOutHW:
+                                    if set[0] == hwset_name:
+                                        set[1] += amount
+                                        found = True
+                                        break
+
+                                if not found:   
+                                    newCheckedOutHW.append([hwset_name,amount])
+
+                                projects_col.update_one({ "id" : request.json["id"] },{ "$set": { "checkedOutHW": newCheckedOutHW } })
+
+
+                                # figure out how to update the hardware set and project on client => useEffect probably
+                                returnedSet = hw_sets_col.find_one({ "name" : request.json["hwset"] })
+                                returnedProject = projects_col.find_one({ "id" : request.json["id"] })
+
+                                print(f'UPDATED HWSET: {returnedSet}')
+                                print(f'UPDATED PROJECT: {returnedProject}')
+
+                                returnedSet.pop("_id")
+                                returnedProject.pop("_id")
+
+                                return jsonify(
+                                    status=200,
+                                    newSet = returnedSet,
+                                    newProject = returnedProject
+                                )
+
+                        return jsonify(
+                            status=-1,
+                            error="No hardware set with that name"
+                        )
+
+                # if project is found but user is not present
                 return jsonify(
-                    status=200,
-                    confirmation = returnedSet
+                    status=-1,
+                    error="No permission to checkout for this project"
                 )
 
-
+        # could not find project
         return jsonify(
             status=-1,
-            error="No hardware set with that name"
+            error="No project with that ID"
         )
+
 
     except Exception as e:
         print(e)
         return str(e)
+
+
+
+
+# check in hardware set
+@app.route('/api/dashboard/hardware/checkin', methods=['POST'])
+def checkin_hwset():
+
+    try:
+        print(request.json)
+
+        userEmail = request.json["user"]
+
+        # make sure project exits
+        for p in projects_col.find():
+            if int(p["id"]) == int(request.json["id"]):
+                for user in p["users"]:
+                    if user == userEmail:
+                        # found project and user is joined
+
+                        id = int(request.json["id"])
+                        hwset_name = request.json["hwset"]
+                        amount = int(request.json["amount"])
+
+                        # make sure hardware set exists
+                        for set in hw_sets_col.find():
+                            if set["name"] == hwset_name: 
+                                print(f'hwset found: {set}')
+
+                                # make sure the quantity is actually available in the project
+                                if (amount > set["availability"]):
+                                    return jsonify(
+                                        status=-1,
+                                        error="No availability for the amount requested"
+                                    )
+
+                                newAvailability = int(set["availability"]) - amount
+
+                                hw_sets_col.update_one({ "name" : set["name"] },{ "$set": { "availability": newAvailability } })
+
+                                updatingProject = projects_col.find_one({ "id" : request.json["id"] })
+                                newCheckedOutHW = updatingProject["checkedOutHW"]
+
+                                found = False
+                                for set in newCheckedOutHW:
+                                    if set[0] == hwset_name:
+                                        set[1] += amount
+                                        found = True
+                                        break
+
+                                if not found:   
+                                    newCheckedOutHW.append([hwset_name,amount])
+
+                                projects_col.update_one({ "id" : request.json["id"] },{ "$set": { "checkedOutHW": newCheckedOutHW } })
+
+
+                                # figure out how to update the hardware set and project on client => useEffect probably
+                                returnedSet = hw_sets_col.find_one({ "name" : request.json["hwset"] })
+                                returnedProject = projects_col.find_one({ "id" : request.json["id"] })
+
+                                print(f'UPDATED HWSET: {returnedSet}')
+                                print(f'UPDATED PROJECT: {returnedProject}')
+
+                                returnedSet.pop("_id")
+                                returnedProject.pop("_id")
+
+                                return jsonify(
+                                    status=200,
+                                    newSet = returnedSet,
+                                    newProject = returnedProject
+                                )
+
+                        return jsonify(
+                            status=-1,
+                            error="No hardware set with that name"
+                        )
+
+                # if project is found but user is not present
+                return jsonify(
+                    status=-1,
+                    error="No permission to checkout for this project"
+                )
+
+        # could not find project
+        return jsonify(
+            status=-1,
+            error="No project with that ID"
+        )
+
+
+    except Exception as e:
+        print(e)
+        return str(e)
+
 
 
 

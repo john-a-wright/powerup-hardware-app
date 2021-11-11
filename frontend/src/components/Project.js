@@ -11,8 +11,16 @@ export function Project(props) {
                 <h3>{props.name}</h3>
                 <p>Project ID: {props.id}</p>
                 <p>Description: {props.description}</p>
-                <p>LIST HERE {props.HWSets}</p>
-                <p>LIST HERE {props.users}</p>
+
+                <strong>Current hardware:</strong>
+                {props.HWSets.map(set => (
+                    <p key={set[0]}>{set[0]}: {set[1]}</p>
+                ))}
+
+                <strong>Users:</strong>
+                {props.users.map(u => (
+                    <p key={u}>{u}</p>
+                ))}
             </div>
         </Container>
     )
