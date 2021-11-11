@@ -44,6 +44,14 @@ class App extends Component {
                 <h1 className="gradient-text">
                     PowerUp Hardware
                 </h1>
+
+                <hr
+                    style={{
+                    color: 'blue',
+                    backgroundColor: 'blue',
+                    height: 10
+                }}/>
+
                 <Router>
                     <AuthProvider>
                         <Switch>

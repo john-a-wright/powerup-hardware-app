@@ -4,6 +4,7 @@ import { useAuth } from '../contexts/AuthContext'
 import { Link, useHistory } from 'react-router-dom'
 import { Container } from 'react-bootstrap'
 import { Project } from './Project'
+import { HWSet } from './HWSet'
 
 export default function Dashboard() {
 
@@ -15,13 +16,13 @@ export default function Dashboard() {
     const [userProjects, setUserProjects] = useState([]);
 
     const loopHWSets = (jsondata) => {
-        for (const [index, value] of jsondata["message"].entries()){
+        for (const [index, value] of jsondata["sets"].entries()) {
             setCurrentSets(currentSets => [...currentSets, value])
         }
     }
 
     const displayProjects = (jsondata) => {
-        for (const [index, value] of jsondata["userProjects"].entries()){
+        for (const [index, value] of jsondata["userProjects"].entries()) {
             setUserProjects(userProjects => [...userProjects, value])
         }
     }
@@ -92,7 +93,7 @@ export default function Dashboard() {
                 setJoinError('');
                 console.log('Success on connection:', data);
 
-                if(data["status"] === -1) {
+                if (data["status"] === -1) {
                     setJoinError(data["error"]);
                     return;
                 }
@@ -102,7 +103,7 @@ export default function Dashboard() {
                 setJoinMessage('Successfully joined project');
 
             })
-            //Then with the error genereted...
+            //Then with the error generated...
             .catch((error) => {
                 console.error('Error:', error);
                 setJoinError('Failed to join project');
@@ -125,11 +126,11 @@ export default function Dashboard() {
         e.preventDefault() //prevent browser refreshing page
 
         setCreateLoading(true);
-        const data = { 
-            name: createNameRef.current.value, 
+        const data = {
+            name: createNameRef.current.value,
             description: createDescriptionRef.current.value,
-            id: createIDRef.current.value, 
-            user: currentUser.email 
+            id: createIDRef.current.value,
+            user: currentUser.email
         };
         console.log(JSON.stringify(data))
 
@@ -147,7 +148,7 @@ export default function Dashboard() {
                 setCreateError('');
                 console.log('Success:', data);
 
-                if(data["status"] === -1) {
+                if (data["status"] === -1) {
                     setCreateError(data["error"]);
                     return;
                 }
@@ -156,7 +157,7 @@ export default function Dashboard() {
 
                 setCreateMessage('Successfully created project');
             })
-            //Then with the error genereted...
+            //Then with the error generated...
             .catch((error) => {
                 console.error('Error:', error);
                 setCreateError('Failed to create project');
@@ -179,7 +180,7 @@ export default function Dashboard() {
     function handleCheckout(e) {
         e.preventDefault() //prevent browser refreshing page
 
-        setJoinLoading(true);
+        setCheckoutLoading(true);
         const data = { projectid: joinRef.current.value, user: currentUser.email };
         console.log(JSON.stringify(data))
 
@@ -194,161 +195,254 @@ export default function Dashboard() {
             .then((response) => response.json())
             //Then with the data from the response in JSON...
             .then((data) => {
-                setJoinError('');
+                setCheckoutError('');
                 console.log('Success:', data);
-                setJoinMessage('Successfully joined project');
+                setCheckoutMessage('Successfully joined project');
+            })
+            //Then with the error generated...
+            .catch((error) => {
+                console.error('Error:', error);
+                setCheckoutError('Failed to join project');
+            });
+
+        setCheckoutLoading(false)
+
+    }
+
+    // END CHECKOUT
+
+    // CHECKIN
+    const checkinIDRef = useRef()
+    const checkinNameRef = useRef()
+    const checkinAmmountRef = useRef()
+    const [checkinError, setCheckinError] = useState('')
+    const [checkinLoading, setCheckinLoading] = useState('')
+    const [checkinMessage, setCheckinMessage] = useState('')
+
+    function handleCheckin(e) {
+        e.preventDefault() //prevent browser refreshing page
+
+        setCheckinLoading(true);
+        const data = { projectid: joinRef.current.value, user: currentUser.email };
+        console.log(JSON.stringify(data))
+
+        //POST request with body equal on data in JSON format
+        fetch(process.env.REACT_APP_URL_PREFIX + "/api/dashboard/projects/join", {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(data),
+        })
+            .then((response) => response.json())
+            //Then with the data from the response in JSON...
+            .then((data) => {
+                setCheckinError('');
+                console.log('Success:', data);
+                setCheckinMessage('Successfully joined project');
             })
             //Then with the error genereted...
             .catch((error) => {
                 console.error('Error:', error);
-                setJoinError('Failed to join project');
+                setCheckinError('Failed to join project');
             });
 
-        setJoinLoading(false)
+        setCheckinLoading(false)
 
     }
 
-    // END CHECKOUT name={project.name} id={project.id} description={project.description}
+    // END CHECKIN
+
 
 
     return (
         <>
+            <div className="container">
+                <div className="row">
+                    <div className="white-font overflow-auto col-sm" style={{ maxHeight: "600px" }}>
+                        <h1>
+                            Your projects:
+                        </h1>
+                        {userProjects.map(project => (
+                            <Project key={project.id}
+                                name={project.name}
+                                id={project.id}
+                                description={project.description}
+                                HWSets={project.checkedOutHW}
+                                users={project.users} />
+                        ))}
 
-            <div className="white-font">
-                <h1>
-                    Your projects:
-                </h1>
-                {userProjects.map(project => (
-                    <Project key={project.id} 
-                    name={project.name} 
-                    id={project.id} 
-                    description={project.description} 
-                    HWSets={project.checkedOutHW} 
-                    users={project.users}/>
-                ))}
-
-            </div>
-
-            <div>
-
-                <Container
-                    className="d-flex align-items-center justify-content-center"
-                    style={{ minHeight: "25vh" }}
-                >
-                    <div
-                        className="w-100"
-                        style={{ maxWidth: "450px" }}
-                    >
-                        <Card>
-                            <Card.Body>
-                                <h2 className="text-center mb-4">Join project</h2>
-                                {joinError && <Alert variant="danger">{joinError}</Alert>}
-                                {joinMessage && <Alert variant="success">{joinMessage}</Alert>}
-                                <Form onSubmit={handleProjectJoining}>
-                                    <Form.Group id="join_project">
-                                        <Form.Label>Enter project ID</Form.Label>
-                                        <Form.Control type="text" ref={joinRef} required />
-                                        <Form.Label></Form.Label>
-                                    </Form.Group>
-                                    <Button disabled={joinLoading} className="w-100" type="submit">Join Project</Button>
-                                </Form>
-
-                            </Card.Body>
-                        </Card>
                     </div>
-                </Container>
+                    <div className="col-sm">
 
-            </div>
+                        <Container
+                            className="d-flex align-items-center justify-content-center"
+                            style={{ minHeight: "25vh" }}
+                        >
+                            <div
+                                className="w-100"
+                                style={{ maxWidth: "450px" }}
+                            >
+                                <Card>
+                                    <Card.Body>
+                                        <h2 className="text-center mb-4">Join project</h2>
+                                        {joinError && <Alert variant="danger">{joinError}</Alert>}
+                                        {joinMessage && <Alert variant="success">{joinMessage}</Alert>}
+                                        <Form onSubmit={handleProjectJoining}>
+                                            <Form.Group id="join_project">
+                                                <Form.Label>Enter project ID</Form.Label>
+                                                <Form.Control type="text" ref={joinRef} required />
+                                                <Form.Label></Form.Label>
+                                            </Form.Group>
+                                            <Button disabled={joinLoading} className="w-100" type="submit">Join Project</Button>
+                                        </Form>
 
-            <div>
+                                    </Card.Body>
+                                </Card>
+                            </div>
+                        </Container>
 
-                <Container
-                    className="d-flex align-items-center justify-content-center"
-                    style={{ minHeight: "25vh" }}
-                >
-                    <div
-                        className="w-100"
-                        style={{ maxWidth: "450px" }}
-                    >
-                        <Card>
-                            <Card.Body>
-                                <h2 className="text-center mb-4">Create project</h2>
-                                {createError && <Alert variant="danger">{createError}</Alert>}
-                                {createMessage && <Alert variant="success">{createMessage}</Alert>}
-                                <Form onSubmit={handleProjectCreating}>
-                                    <Form.Group id="create_project">
-                                        <Form.Label>Enter a project name</Form.Label>
-                                        <Form.Control type="text" ref={createNameRef} required />
-                                        <Form.Label>Enter a project description</Form.Label>
-                                        <Form.Control type="text" ref={createDescriptionRef} required />
-                                        <Form.Label>Enter a project ID</Form.Label>
-                                        <Form.Control type="text" ref={createIDRef} required />
-                                        <Form.Label></Form.Label>
-                                    </Form.Group>
-                                    <Button disabled={createLoading} className="w-100" type="submit">Create project</Button>
-                                </Form>
+                        <Container
+                            className="d-flex align-items-center justify-content-center"
+                            style={{ minHeight: "25vh" }}
+                        >
+                            <div
+                                className="w-100"
+                                style={{ maxWidth: "450px" }}
+                            >
+                                <Card>
+                                    <Card.Body>
+                                        <h2 className="text-center mb-4">Create project</h2>
+                                        {createError && <Alert variant="danger">{createError}</Alert>}
+                                        {createMessage && <Alert variant="success">{createMessage}</Alert>}
+                                        <Form onSubmit={handleProjectCreating}>
+                                            <Form.Group id="create_project">
+                                                <Form.Label>Enter a project name</Form.Label>
+                                                <Form.Control type="text" ref={createNameRef} required />
+                                                <Form.Label>Enter a project description</Form.Label>
+                                                <Form.Control type="text" ref={createDescriptionRef} required />
+                                                <Form.Label>Enter a project ID</Form.Label>
+                                                <Form.Control type="text" ref={createIDRef} required />
+                                                <Form.Label></Form.Label>
+                                            </Form.Group>
+                                            <Button disabled={createLoading} className="w-100" type="submit">Create project</Button>
+                                        </Form>
 
-                            </Card.Body>
-                        </Card>
+                                    </Card.Body>
+                                </Card>
+                            </div>
+                        </Container>
+
                     </div>
-                </Container>
 
+                </div>
             </div>
 
+            <hr
+                style={{
+                    color: 'blue',
+                    backgroundColor: 'blue',
+                    height: 10,
+                }}
+            />
 
-
-
-            <div className="white-font">
-                <h1>
-                    Available Hardware Sets:
-                </h1>
-                <p>
-                    {currentSets}
-                </p>
-
-            </div>
-
-
-            <div>
-
-                <Container
-                    className="d-flex align-items-center justify-content-center"
-                    style={{ minHeight: "25vh" }}
-                >
-                    <div
-                        className="w-100"
-                        style={{ maxWidth: "450px" }}
-                    >
-                        <Card>
-                            <Card.Body>
-                                <h2 className="text-center mb-4">Checkout hardware</h2>
-                                {checkoutError && <Alert variant="danger">{checkoutError}</Alert>}
-                                {checkoutMessage && <Alert variant="success">{checkoutMessage}</Alert>}
-                                <Form onSubmit={handleCheckout}>
-                                    <Form.Group id="checkout">
-                                        <Form.Label>Enter a project ID</Form.Label>
-                                        <Form.Control type="text" ref={checkoutIDRef} required />
-                                        <Form.Label>Enter a hardware set name</Form.Label>
-                                        <Form.Control type="text" ref={checkoutNameRef} required />
-                                        <Form.Label>Enter an ammount</Form.Label>
-                                        <Form.Control type="text" ref={checkoutAmmountRef} required />
-                                        <Form.Label></Form.Label>
-                                    </Form.Group>
-                                    <Button disabled={checkoutLoading} className="w-100" type="submit">Checkout</Button>
-                                </Form>
-
-                            </Card.Body>
-                        </Card>
+            <div className="container">
+                <div className="row">
+                    <div className="white-font className=overflow-auto col-sm">
+                        <h1>
+                            Available Hardware Sets:
+                        </h1>
+                        {currentSets.map(set => (
+                            <HWSet key={set.name}
+                                name={set.name}
+                                capacity={set.capacity}
+                                availability={set.availability} />
+                        ))}
                     </div>
-                </Container>
 
+                    <div className="col-sm">
+
+                        <Container
+                            className="d-flex align-items-center justify-content-center"
+                            style={{ minHeight: "25vh" }}
+                        >
+                            <div
+                                className="w-100"
+                                style={{ maxWidth: "450px" }}
+                            >
+                                <Card>
+                                    <Card.Body>
+                                        <h2 className="text-center mb-4">Checkout hardware</h2>
+                                        {checkoutError && <Alert variant="danger">{checkoutError}</Alert>}
+                                        {checkoutMessage && <Alert variant="success">{checkoutMessage}</Alert>}
+                                        <Form onSubmit={handleCheckout}>
+                                            <Form.Group id="checkout">
+                                                <Form.Label>Enter a project ID</Form.Label>
+                                                <Form.Control type="text" ref={checkoutIDRef} required />
+                                                <Form.Label>Enter a hardware set name</Form.Label>
+                                                <Form.Control type="text" ref={checkoutNameRef} required />
+                                                <Form.Label>Enter an ammount</Form.Label>
+                                                <Form.Control type="text" ref={checkoutAmmountRef} required />
+                                                <Form.Label></Form.Label>
+                                            </Form.Group>
+                                            <Button disabled={checkoutLoading} className="w-100" type="submit">Checkout</Button>
+                                        </Form>
+
+                                    </Card.Body>
+                                </Card>
+                            </div>
+                        </Container>
+
+                        <Container
+                            className="d-flex align-items-center justify-content-center"
+                            style={{ minHeight: "25vh" }}
+                        >
+                            <div
+                                className="w-100"
+                                style={{ maxWidth: "450px" }}
+                            >
+                                <Card>
+                                    <Card.Body>
+                                        <h2 className="text-center mb-4">Checkin hardware</h2>
+                                        {checkinError && <Alert variant="danger">{checkinError}</Alert>}
+                                        {checkinMessage && <Alert variant="success">{checkinMessage}</Alert>}
+                                        <Form onSubmit={handleCheckin}>
+                                            <Form.Group id="checkout">
+                                                <Form.Label>Enter a project ID</Form.Label>
+                                                <Form.Control type="text" ref={checkinIDRef} required />
+                                                <Form.Label>Enter a hardware set name</Form.Label>
+                                                <Form.Control type="text" ref={checkinNameRef} required />
+                                                <Form.Label>Enter an ammount</Form.Label>
+                                                <Form.Control type="text" ref={checkinAmmountRef} required />
+                                                <Form.Label></Form.Label>
+                                            </Form.Group>
+                                            <Button disabled={checkinLoading} className="w-100" type="submit">Checkin</Button>
+                                        </Form>
+
+                                    </Card.Body>
+                                </Card>
+                            </div>
+                        </Container>
+                    </div>
+                </div>
             </div>
+
+            <hr
+                style={{
+                    color: 'blue',
+                    backgroundColor: 'blue',
+                    height: 10,
+                }}
+            />
 
             <div>
                 <Container
                     className="align-items-center justify-content-center"
                     style={{ minHeight: "25vh" }}
                 >
+
+                    <h1 className="white-font">Available Datasets:</h1>
+
                     <h3 className="white-font">
                         Blood Pressure in Salt-Sensitive Dahl Rats
                     </h3>
@@ -357,7 +451,7 @@ export default function Dashboard() {
                         <a href="https://physionet.org/static/published-projects/bpssrat/blood-pressure-in-salt-sensitive-dahl-rats-1.0.0.zip">
                             Download (3.4MB)
                         </a>
-                    </p>    
+                    </p>
 
                     <h3 className="white-font">
                         Gait in Aging and Disease Database
@@ -368,7 +462,7 @@ export default function Dashboard() {
                             Download (354.6KB)
                         </a>
                     </p>
-                    
+
                     <h3 className="white-font">
                         Long Term AF Database
                     </h3>
@@ -402,29 +496,35 @@ export default function Dashboard() {
                 </Container>
             </div>
 
-            <header>
-                <Container
-                    className="d-flex align-items-center justify-content-center"
-                    style={{ minHeight: "100vh" }}
+            <hr
+                style={{
+                    color: 'blue',
+                    backgroundColor: 'blue',
+                    height: 10,
+                }}
+            />
+
+            <Container
+                className="d-flex align-items-center justify-content-center"
+                style={{ minHeight: "25vh" }}
+            >
+                <div
+                    className="w-100"
+                    style={{ maxWidth: "450px" }}
                 >
-                    <div
-                        className="w-100"
-                        style={{ maxWidth: "450px" }}
-                    >
-                        <Card>
-                            <Card.Body>
-                                <h2 className="text-center mb-4">Profile</h2>
-                                {error && <Alert variant="danger">{error}</Alert>}
-                                <strong> Email: </strong>{currentUser.email}
-                                <Link to="/update-profile" className="btn btn-primary w-100 mt-3">Update Profile</Link>
-                            </Card.Body>
-                        </Card>
-                        <div className="w-100 text center mt-2">
-                            <Button variant="link" onClick={handleLogout}>Log Out</Button>
-                        </div>
+                    <Card>
+                        <Card.Body>
+                            <h2 className="text-center mb-4">Profile</h2>
+                            {error && <Alert variant="danger">{error}</Alert>}
+                            <strong> Email: </strong>{currentUser.email}
+                            <Link to="/update-profile" className="btn btn-primary w-100 mt-3">Update Profile</Link>
+                        </Card.Body>
+                    </Card>
+                    <div className="w-100 text center mt-2">
+                        <Button variant="link" onClick={handleLogout}>Log Out</Button>
                     </div>
-                </Container>
-            </header>
+                </div>
+            </Container>
 
         </>
     )

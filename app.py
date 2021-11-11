@@ -60,12 +60,18 @@ def output_name(name):
 
 # return hardware sets
 @app.route('/api/dashboard/hardware', methods=['GET'])
-def get_sets():
-    set1 = hw_sets_col.find_one({"name": "set1"})
-    print('SHOULD BE NAME HERE: ' + set1['name'])
+def get_hwsets():
+
+    hwsetsToSend = []
+
+    for set in hw_sets_col.find():
+        newSet = set
+        newSet.pop("_id")
+        hwsetsToSend.append(newSet)
+
     return jsonify(
         status=200,
-        message=[set1['name']]
+        sets=hwsetsToSend
     )
 
 
@@ -143,7 +149,7 @@ def join_projects():
         print(request.json)
         id = request.json["projectid"]
         email = request.json["user"]
-        print(f'user joining project with id: {id} by user: {email}')
+        #print(f'user joining project with id: {id} by user: {email}')
 
         oldUsers = []
 
@@ -156,10 +162,8 @@ def join_projects():
                             error="Already in Project"
                         )
                 oldUsers = p["users"]
-                print(f'OLD USERS: {oldUsers}')
                 oldUsers.append(email)
                 # add user to project
-                print(f'NEW USERS: {oldUsers} with an id of {p["id"]}')
                 projects_col.update_one({ "id" : p["id"] },{ "$set": { "users": oldUsers } })
 
                 p_dict = {  'id' : p['id'],
