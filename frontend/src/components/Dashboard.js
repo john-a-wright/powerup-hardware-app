@@ -90,8 +90,17 @@ export default function Dashboard() {
             //Then with the data from the response in JSON...
             .then((data) => {
                 setJoinError('');
-                console.log('Success:', data);
+                console.log('Success on connection:', data);
+
+                if(data["status"] === -1) {
+                    setJoinError(data["error"]);
+                    return;
+                }
+
+                setUserProjects(userProjects => [...userProjects, data["newlyJoinedProject"]])
+
                 setJoinMessage('Successfully joined project');
+
             })
             //Then with the error genereted...
             .catch((error) => {
@@ -137,7 +146,15 @@ export default function Dashboard() {
             .then((data) => {
                 setCreateError('');
                 console.log('Success:', data);
-                setCreateMessage('Successfully create project');
+
+                if(data["status"] === -1) {
+                    setCreateError(data["error"]);
+                    return;
+                }
+
+                setUserProjects(userProjects => [...userProjects, data["newlyCreatedProject"]])
+
+                setCreateMessage('Successfully created project');
             })
             //Then with the error genereted...
             .catch((error) => {

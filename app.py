@@ -1,4 +1,4 @@
-#from flask_cors import CORS
+from flask_cors import CORS
 from flask import Flask, jsonify, request
 from flask.helpers import send_from_directory
 
@@ -8,25 +8,25 @@ from pymongo import MongoClient
 
 # DONT NEED SSL FOR SERVER BUT DO NEED OS
 
-#import ssl
-import os
+import ssl
+#import os
 
 # Location for index.html
 app = Flask(__name__, static_folder="frontend/build", static_url_path="")
 
 # comment out when building for server
-#CORS(app)
+CORS(app)
 
 
 # Get MongoDB client
 
 # HEROKU
-mongo_uri = os.environ['MONGODB_URI']
-mongoClient = MongoClient(mongo_uri)
+#mongo_uri = os.environ['MONGODB_URI']
+#mongoClient = MongoClient(mongo_uri)
 
 # CLIENT SIDE
-#mongo_uri = "mongodb+srv://powerup:fig@cluster0.oemnt.mongodb.net/powerup-hardware?retryWrites=true"
-#mongoClient = MongoClient(mongo_uri,ssl_cert_reqs=ssl.CERT_NONE)
+mongo_uri = "mongodb+srv://powerup:fig@cluster0.oemnt.mongodb.net/powerup-hardware?retryWrites=true"
+mongoClient = MongoClient(mongo_uri,ssl_cert_reqs=ssl.CERT_NONE)
 
 
 # Get database
@@ -101,7 +101,7 @@ def create_projects():
         print(request.json)
 
         for p in projects_col.find():
-            if p["id"] == request.json["id"]:
+            if int(p["id"]) == int(request.json["id"]):
                 return jsonify(
                     status=-1,
                     error="Project ID has already been used"
@@ -124,6 +124,9 @@ def create_projects():
         id = str(request.json["id"])
         print(f'created project with id: {id} by user: {user}')
 
+        newProject.pop("_id")
+        #print(newProject)
+
         return jsonify(
             status=200,
             newlyCreatedProject = newProject
@@ -139,12 +142,42 @@ def join_projects():
     try:
         print(request.json)
         id = request.json["projectid"]
-        user = request.json["user"]
-        print(f'user joining project with id: {id} by user: {user}')
+        email = request.json["user"]
+        print(f'user joining project with id: {id} by user: {email}')
+
+        oldUsers = []
+
+        for p in projects_col.find():
+            if int(p["id"]) == int(request.json["projectid"]):
+                for user in p["users"]:
+                    if user == email:
+                        return jsonify(
+                            status=-1,
+                            error="Already in Project"
+                        )
+                oldUsers = p["users"]
+                print(f'OLD USERS: {oldUsers}')
+                oldUsers.append(email)
+                # add user to project
+                print(f'NEW USERS: {oldUsers}')
+                projects_col.update_one({ "id" : id },{ "$set": { "users": oldUsers } })
+
+                p_dict = {  'id' : p['id'],
+                            'name' : p['name'],
+                            'description' : p['description'],
+                            'checkedOutHW' : p['checkedOutHW'],
+                            'users' : p['users']
+                            }
+
+                return jsonify(
+                    status=200,
+                    newlyJoinedProject = p_dict
+                )
+
 
         return jsonify(
-            status=200,
-            message="joined project " + id + " by user " + user
+            status=-1,
+            error="No project with that ID"
         )
 
     except Exception as e:
@@ -153,7 +186,7 @@ def join_projects():
 
 
 # Starting route for index
-@app.route("/*")
+@app.route("/")
 def index():
     return send_from_directory(app.static_folder, "index.html")
 
