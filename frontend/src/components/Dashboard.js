@@ -90,6 +90,7 @@ export default function Dashboard() {
             .then((response) => response.json())
             //Then with the data from the response in JSON...
             .then((data) => {
+                setJoinMessage('');
                 setJoinError('');
                 console.log('Success on connection:', data);
 
@@ -105,6 +106,7 @@ export default function Dashboard() {
             })
             //Then with the error generated...
             .catch((error) => {
+                setJoinMessage('');
                 console.error('Error:', error);
                 setJoinError('Failed to join project');
             });
@@ -149,6 +151,7 @@ export default function Dashboard() {
                 console.log('Success:', data);
 
                 if (data["status"] === -1) {
+                    setCreateMessage('');
                     setCreateError(data["error"]);
                     return;
                 }
@@ -159,6 +162,7 @@ export default function Dashboard() {
             })
             //Then with the error generated...
             .catch((error) => {
+                setCreateMessage('');
                 console.error('Error:', error);
                 setCreateError('Failed to create project');
             });
@@ -181,11 +185,16 @@ export default function Dashboard() {
         e.preventDefault() //prevent browser refreshing page
 
         setCheckoutLoading(true);
-        const data = { projectid: joinRef.current.value, user: currentUser.email };
+        const data = { 
+            id: checkoutIDRef.current.value, 
+            hwset: checkoutNameRef.current.value, 
+            ammount: checkoutAmmountRef.current.value, 
+            user: currentUser.email 
+        };
         console.log(JSON.stringify(data))
 
         //POST request with body equal on data in JSON format
-        fetch(process.env.REACT_APP_URL_PREFIX + "/api/dashboard/projects/join", {
+        fetch(process.env.REACT_APP_URL_PREFIX + "/api/dashboard/hardware/checkout", {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -197,12 +206,13 @@ export default function Dashboard() {
             .then((data) => {
                 setCheckoutError('');
                 console.log('Success:', data);
-                setCheckoutMessage('Successfully joined project');
+                setCheckoutMessage('Successfully checked out hardware');
             })
             //Then with the error generated...
             .catch((error) => {
+                setCheckoutMessage('');
                 console.error('Error:', error);
-                setCheckoutError('Failed to join project');
+                setCheckoutError('Failed checked out hardware');
             });
 
         setCheckoutLoading(false)
@@ -244,6 +254,7 @@ export default function Dashboard() {
             //Then with the error genereted...
             .catch((error) => {
                 console.error('Error:', error);
+                setCheckinMessage('');
                 setCheckinError('Failed to join project');
             });
 

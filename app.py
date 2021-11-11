@@ -1,4 +1,4 @@
-#from flask_cors import CORS
+from flask_cors import CORS
 from flask import Flask, jsonify, request
 from flask.helpers import send_from_directory
 
@@ -8,25 +8,25 @@ from pymongo import MongoClient
 
 # DONT NEED SSL FOR SERVER BUT DO NEED OS
 
-#import ssl
-import os
+import ssl
+#import os
 
 # Location for index.html
 app = Flask(__name__, static_folder="frontend/build", static_url_path="")
 
 # comment out when building for server
-#CORS(app)
+CORS(app)
 
 
 # Get MongoDB client
 
 # HEROKU
-mongo_uri = os.environ['MONGODB_URI']
-mongoClient = MongoClient(mongo_uri)
+#mongo_uri = os.environ['MONGODB_URI']
+#mongoClient = MongoClient(mongo_uri)
 
 # CLIENT SIDE
-#mongo_uri = "mongodb+srv://powerup:fig@cluster0.oemnt.mongodb.net/powerup-hardware?retryWrites=true"
-#mongoClient = MongoClient(mongo_uri,ssl_cert_reqs=ssl.CERT_NONE)
+mongo_uri = "mongodb+srv://powerup:fig@cluster0.oemnt.mongodb.net/powerup-hardware?retryWrites=true"
+mongoClient = MongoClient(mongo_uri,ssl_cert_reqs=ssl.CERT_NONE)
 
 
 # Get database
@@ -44,20 +44,6 @@ global_var_col = powerup_db.get_collection("global-variables")
 # define for the mongodb id that corresponds to the id counting variable
 project_id_counter_objectid = "618c24d098d337aed1695941"
 
-# Get the name from the url and return the output
-@app.route('/api/dashboard/<string:name>', methods=['GET'])
-def output_name(name):
-    if name == 'John':
-        return jsonify(
-            status=200,
-            message="Wright"
-        )
-    else:
-        return jsonify(
-            status=404,
-            message="User Not Found"
-        )
-
 # return hardware sets
 @app.route('/api/dashboard/hardware', methods=['GET'])
 def get_hwsets():
@@ -73,6 +59,41 @@ def get_hwsets():
         status=200,
         sets=hwsetsToSend
     )
+
+# checkout hardware set
+@app.route('/api/dashboard/hardware/checkout', methods=['POST'])
+def checkout_hwset():
+
+    try:
+        print(request.json)
+
+        # make sure project exits
+
+        for set in hw_sets_col.find():
+            if set["name"] == request.json["hwset"]: 
+                print(f'hwset found: {set}')
+
+                # make sure the quantity is actually available
+
+                # figure out how to update the hardware set and project on client => useEffect probably
+
+                returnedSet = set
+                returnedSet.pop("_id")
+
+                return jsonify(
+                    status=200,
+                    confirmation = returnedSet
+                )
+
+
+        return jsonify(
+            status=-1,
+            error="No hardware set with that name"
+        )
+
+    except Exception as e:
+        print(e)
+        return str(e)
 
 
 
