@@ -315,8 +315,8 @@ export default function Dashboard() {
                     return;
                 }
                 
-                //updateSet(data);
-                //updateProject(data);
+                updateSet(data);
+                updateProject(data);
 
                 setCheckinMessage('Successfully checked in hardware');
             })

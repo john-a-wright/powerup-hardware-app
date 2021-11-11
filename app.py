@@ -1,4 +1,4 @@
-from flask_cors import CORS
+#from flask_cors import CORS
 from flask import Flask, jsonify, request
 from flask.helpers import send_from_directory
 
@@ -8,25 +8,25 @@ from pymongo import MongoClient
 
 # DONT NEED SSL FOR SERVER BUT DO NEED OS
 
-import ssl
-#import os
+#import ssl
+import os
 
 # Location for index.html
 app = Flask(__name__, static_folder="frontend/build", static_url_path="")
 
 # comment out when building for server
-CORS(app)
+#CORS(app)
 
 
 # Get MongoDB client
 
 # HEROKU
-#mongo_uri = os.environ['MONGODB_URI']
-#mongoClient = MongoClient(mongo_uri)
+mongo_uri = os.environ['MONGODB_URI']
+mongoClient = MongoClient(mongo_uri)
 
 # CLIENT SIDE
-mongo_uri = "mongodb+srv://powerup:fig@cluster0.oemnt.mongodb.net/powerup-hardware?retryWrites=true"
-mongoClient = MongoClient(mongo_uri,ssl_cert_reqs=ssl.CERT_NONE)
+#mongo_uri = "mongodb+srv://powerup:fig@cluster0.oemnt.mongodb.net/powerup-hardware?retryWrites=true"
+#mongoClient = MongoClient(mongo_uri,ssl_cert_reqs=ssl.CERT_NONE)
 
 
 # Get database
@@ -76,14 +76,14 @@ def checkout_hwset():
                     if user == userEmail:
                         # found project and user is joined
 
-                        id = int(request.json["id"])
+                        id = str(request.json["id"])
                         hwset_name = request.json["hwset"]
                         amount = int(request.json["amount"])
 
                         # make sure hardware set exists
                         for set in hw_sets_col.find():
                             if set["name"] == hwset_name: 
-                                print(f'hwset found: {set}')
+                                #print(f'hwset found: {set}')
 
                                 # make sure the quantity is actually available
                                 if (amount > set["availability"] or amount > set["capacity"]):
@@ -96,7 +96,8 @@ def checkout_hwset():
 
                                 hw_sets_col.update_one({ "name" : set["name"] },{ "$set": { "availability": newAvailability } })
 
-                                updatingProject = projects_col.find_one({ "id" : request.json["id"] })
+                                print(f'trying to find proejct with id {id}')
+                                updatingProject = projects_col.find_one({ "id" : id })
                                 newCheckedOutHW = updatingProject["checkedOutHW"]
 
                                 found = False
@@ -109,15 +110,15 @@ def checkout_hwset():
                                 if not found:   
                                     newCheckedOutHW.append([hwset_name,amount])
 
-                                projects_col.update_one({ "id" : request.json["id"] },{ "$set": { "checkedOutHW": newCheckedOutHW } })
-
+                                projects_col.update_one({ "id" : id },{ "$set": { "checkedOutHW": newCheckedOutHW } })
+                                #print('successfully updated database project')
 
                                 # figure out how to update the hardware set and project on client => useEffect probably
                                 returnedSet = hw_sets_col.find_one({ "name" : request.json["hwset"] })
-                                returnedProject = projects_col.find_one({ "id" : request.json["id"] })
+                                returnedProject = projects_col.find_one({ "id" : id })
 
-                                print(f'UPDATED HWSET: {returnedSet}')
-                                print(f'UPDATED PROJECT: {returnedProject}')
+                                #print(f'UPDATED HWSET: {returnedSet}')
+                                #print(f'UPDATED PROJECT: {returnedProject}')
 
                                 returnedSet.pop("_id")
                                 returnedProject.pop("_id")
@@ -169,7 +170,7 @@ def checkin_hwset():
                     if user == userEmail:
                         # found project and user is joined
 
-                        id = int(request.json["id"])
+                        id = str(request.json["id"])
                         hwset_name = request.json["hwset"]
                         amount = int(request.json["amount"])
 
@@ -179,35 +180,35 @@ def checkin_hwset():
                                 print(f'hwset found: {set}')
 
                                 # make sure the quantity is actually available in the project
-                                if (amount > set["availability"]):
+                                count = 0
+                                checkedOutHWIndex = -1
+                                for projectSet in p["checkedOutHW"]:
+                                    if projectSet[0] == hwset_name:
+                                        checkedOutHWIndex = count
+                                        break
+                                    count+=1
+
+                                if (checkedOutHWIndex == -1 or p["checkedOutHW"][checkedOutHWIndex][1] < amount):
                                     return jsonify(
                                         status=-1,
-                                        error="No availability for the amount requested"
+                                        error="Project does not have that amount to check in"
                                     )
 
-                                newAvailability = int(set["availability"]) - amount
+                                newAmountCheckedOut = int(p["checkedOutHW"][checkedOutHWIndex][1]) - amount
+
+                                updatingProject = projects_col.find_one({ "id" : id })
+                                newCheckedOutHW = updatingProject["checkedOutHW"]
+                                newCheckedOutHW[checkedOutHWIndex][1] = newAmountCheckedOut
+
+                                projects_col.update_one({ "id" : id },{ "$set": { "checkedOutHW": newCheckedOutHW } })
+
+
+                                newAvailability = int(set["availability"]) + amount
 
                                 hw_sets_col.update_one({ "name" : set["name"] },{ "$set": { "availability": newAvailability } })
 
-                                updatingProject = projects_col.find_one({ "id" : request.json["id"] })
-                                newCheckedOutHW = updatingProject["checkedOutHW"]
-
-                                found = False
-                                for set in newCheckedOutHW:
-                                    if set[0] == hwset_name:
-                                        set[1] += amount
-                                        found = True
-                                        break
-
-                                if not found:   
-                                    newCheckedOutHW.append([hwset_name,amount])
-
-                                projects_col.update_one({ "id" : request.json["id"] },{ "$set": { "checkedOutHW": newCheckedOutHW } })
-
-
-                                # figure out how to update the hardware set and project on client => useEffect probably
                                 returnedSet = hw_sets_col.find_one({ "name" : request.json["hwset"] })
-                                returnedProject = projects_col.find_one({ "id" : request.json["id"] })
+                                returnedProject = projects_col.find_one({ "id" : id })
 
                                 print(f'UPDATED HWSET: {returnedSet}')
                                 print(f'UPDATED PROJECT: {returnedProject}')
