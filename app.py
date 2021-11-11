@@ -216,8 +216,25 @@ def index():
     return send_from_directory(app.static_folder, "index.html")
 
 @app.route("/dashboard")
-def index_other():
+def index_dashboard():
     return send_from_directory(app.static_folder, "index.html")
+
+@app.route("/update-profile")
+def index_dashboard():
+    return send_from_directory(app.static_folder, "index.html")
+
+@app.route("/signup")
+def index_dashboard():
+    return send_from_directory(app.static_folder, "index.html")
+
+@app.route("/forgot-password")
+def index_dashboard():
+    return send_from_directory(app.static_folder, "index.html")
+
+@app.route("/login")
+def index_dashboard():
+    return send_from_directory(app.static_folder, "index.html")
+
 
 
 if __name__ == '__main__':
