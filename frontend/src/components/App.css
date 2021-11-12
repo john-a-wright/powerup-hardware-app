@@ -1,6 +1,13 @@
 .App {
   text-align: center;
   background-color: #282c34;
+  width: 100%;
+  /*
+    px
+    %
+    vw
+    vh
+  */
 }
 
 .App-header {
@@ -28,7 +35,7 @@
 
 .gradient-text {
   
-  font-size: calc(70px);
+  font-size: calc(80px);
 
   background-color: rgb(255, 255, 255);
   
@@ -61,7 +68,9 @@
 .container-darkmode {
   color: white;
   border-color:#0205a4!important;
-  background-color: rgb(31, 31, 34)!important;
+  /*background-color: rgb(31, 31, 34)!important;*/
+  background: linear-gradient(360deg, #012e75 40%, rgb(31, 31, 34) 106.09%);
+  border-radius: 100px;
 }
 
 .white-font {
@@ -95,4 +104,12 @@ hr.break2{
 .contactList {
   background: rgb(31, 31, 34)!important;
   color: white!important;
+}
+
+.login-overflow {
+  overflow-x: hidden;
+}
+
+.table-format{
+  border-color:#0205a4!important;
 }

@@ -40,13 +40,7 @@ class App extends Component {
     render() {
         return (
             <>
-                <head>
-
-                    <title>PowerUp Hardware</title>
-
-                </head>
-
-                <div className="App">
+                <div className="App login-overflow">
 
                     <h1 className="gradient-text">
                         PowerUp Hardware

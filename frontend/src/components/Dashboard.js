@@ -348,9 +348,9 @@ export default function Dashboard() {
                             Your projects
                         </h1>
 
-                        <table className="table table-dark table-striped table-bordered">
+                        <table className="table table-dark table-striped table-bordered table-format">
                             <thead>
-                                <tr class="table-primary">
+                                <tr class="table-format">
                                     <th>Name</th>
                                     <th>Project ID</th>
                                     <th>Description</th>
@@ -358,7 +358,7 @@ export default function Dashboard() {
                                     <th>Users</th>
                                 </tr>
                             </thead>
-                            <tbody>
+                            <tbody class="table-format">
                                 {userProjects.map(project => (
                                     <Project key={project.id}
                                         name={project.name}
@@ -456,15 +456,15 @@ export default function Dashboard() {
                         <h1>
                             Available Hardware Sets
                         </h1>
-                        <table className="table table-dark table-striped table-bordered">
+                        <table className="table table-dark table-striped table-bordered table-format">
                             <thead>
-                                <tr class="table-primary">
+                                <tr class="table-format">
                                     <th>Name</th>
                                     <th>Capacity</th>
                                     <th>Availability</th>
                                 </tr>
                             </thead>
-                            <tbody>
+                            <tbody class="table-format">
                                 {currentSets.map(set => (
                                     <HWSet key={set.name}
                                         name={set.name}
@@ -560,19 +560,19 @@ export default function Dashboard() {
 
                     <h1 className="white-font">Available Datasets</h1>
 
-                    <table className="table table-dark table-striped table-bordered white-font overflow-auto center"
+                    <table className="table table-dark table-striped table-bordered white-font overflow-auto center table-format"
                         style={{
                             maxHeight: "600px",
                             maxWidth: "1272px"
                         }}>
                         <thead>
-                            <tr class="table-primary">
+                            <tr class="table-format">
                                 <th>Name</th>
                                 <th>Description</th>
                                 <th>Download</th>
                             </tr>
                         </thead>
-                        <tbody>
+                        <tbody class="table-format">
                             <tr>
                                 <td>Blood Pressure in Salt-Sensitive Dahl Rats</td>
                                 <td>This database contains continuous blood pressure recordings for 9 Dahl SS rats and 6 Dahl SS.13BN rats, under high and low salt conditions.</td>
