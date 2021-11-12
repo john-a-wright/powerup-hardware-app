@@ -70,7 +70,7 @@
   border-color:#0205a4!important;
   /*background-color: rgb(31, 31, 34)!important;*/
   background: linear-gradient(360deg, #012e75 30%, rgb(31, 31, 34) 106.09%);
-  border-radius: 100px;
+  border-radius: 3px;
 }
 
 .white-font {
