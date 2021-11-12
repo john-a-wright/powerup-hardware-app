@@ -32,15 +32,15 @@ export default function Dashboard() {
         var j;
         var updatedSets = [];
         for (i = 0; i < currentSets.length; i++) {
-            if(currentSets[i].name === data["newSet"]["name"]){
+            if (currentSets[i].name === data["newSet"]["name"]) {
                 //found hwset in state array: loop back thru
                 for (j = 0; j < currentSets.length; j++) {
-                    if(j === i){
+                    if (j === i) {
                         var setToBeUpdated = currentSets[i]
                         setToBeUpdated.availability = data["newSet"]["availability"]
 
                         updatedSets.push(setToBeUpdated)
-                    }else{
+                    } else {
                         updatedSets.push(currentSets[j])
                     }
                 }
@@ -54,15 +54,15 @@ export default function Dashboard() {
         var j;
         var updatedProjects = [];
         for (i = 0; i < userProjects.length; i++) {
-            if(userProjects[i].id === data["newProject"]["id"]){
+            if (userProjects[i].id === data["newProject"]["id"]) {
                 //found project in state array: loop back thru
                 for (j = 0; j < userProjects.length; j++) {
-                    if(j === i){
+                    if (j === i) {
                         var projectToBeUpdated = userProjects[i]
                         projectToBeUpdated.checkedOutHW = data["newProject"]["checkedOutHW"]
 
                         updatedProjects.push(projectToBeUpdated)
-                    }else{
+                    } else {
                         updatedProjects.push(userProjects[j])
                     }
                 }
@@ -229,11 +229,11 @@ export default function Dashboard() {
         e.preventDefault() //prevent browser refreshing page
 
         setCheckoutLoading(true);
-        const data = { 
-            id: checkoutIDRef.current.value, 
-            hwset: checkoutNameRef.current.value, 
-            amount: checkoutAmountRef.current.value, 
-            user: currentUser.email 
+        const data = {
+            id: checkoutIDRef.current.value,
+            hwset: checkoutNameRef.current.value,
+            amount: checkoutAmountRef.current.value,
+            user: currentUser.email
         };
         console.log(JSON.stringify(data))
 
@@ -256,7 +256,7 @@ export default function Dashboard() {
                     setCheckoutError(data["error"]);
                     return;
                 }
-                
+
                 updateSet(data);
                 updateProject(data);
 
@@ -287,11 +287,11 @@ export default function Dashboard() {
         e.preventDefault() //prevent browser refreshing page
 
         setCheckinLoading(true);
-        const data = { 
-            id: checkinIDRef.current.value, 
-            hwset: checkinNameRef.current.value, 
-            amount: checkinAmountRef.current.value, 
-            user: currentUser.email 
+        const data = {
+            id: checkinIDRef.current.value,
+            hwset: checkinNameRef.current.value,
+            amount: checkinAmountRef.current.value,
+            user: currentUser.email
         };
         console.log(JSON.stringify(data))
 
@@ -314,7 +314,7 @@ export default function Dashboard() {
                     setCheckinError(data["error"]);
                     return;
                 }
-                
+
                 updateSet(data);
                 updateProject(data);
 
@@ -339,18 +339,36 @@ export default function Dashboard() {
         <>
             <div className="container">
                 <div className="row">
-                    <div className="white-font overflow-auto col-sm" style={{ maxHeight: "600px" }}>
+                    <div className="white-font overflow-auto col-sm"
+                        style={{
+                            maxHeight: "600px",
+                            minWidth: "800px"
+                        }}>
                         <h1>
                             Your projects:
                         </h1>
-                        {userProjects.map(project => (
-                            <Project key={project.id}
-                                name={project.name}
-                                id={project.id}
-                                description={project.description}
-                                HWSets={project.checkedOutHW}
-                                users={project.users} />
-                        ))}
+
+                        <table className="table table-dark table-striped table-bordered">
+                            <thead>
+                                <tr class="table-primary">
+                                    <th>Name</th>
+                                    <th>Project ID</th>
+                                    <th>Description</th>
+                                    <th>Current Hardware</th>
+                                    <th>Users</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {userProjects.map(project => (
+                                    <Project key={project.id}
+                                        name={project.name}
+                                        id={project.id}
+                                        description={project.description}
+                                        HWSets={project.checkedOutHW}
+                                        users={project.users} />
+                                ))}
+                            </tbody>
+                        </table>
 
                     </div>
                     <div className="col-sm">
@@ -363,7 +381,7 @@ export default function Dashboard() {
                                 className="w-100"
                                 style={{ maxWidth: "450px" }}
                             >
-                                <Card>
+                                <Card className="container-darkmode">
                                     <Card.Body>
                                         <h2 className="text-center mb-4">Join project</h2>
                                         {joinError && <Alert variant="danger">{joinError}</Alert>}
@@ -371,7 +389,7 @@ export default function Dashboard() {
                                         <Form onSubmit={handleProjectJoining}>
                                             <Form.Group id="join_project">
                                                 <Form.Label>Enter project ID</Form.Label>
-                                                <Form.Control type="text" ref={joinRef} required />
+                                                <Form.Control type="text" ref={joinRef} required placeholder="ID" />
                                                 <Form.Label></Form.Label>
                                             </Form.Group>
                                             <Button disabled={joinLoading} className="w-100" type="submit">Join Project</Button>
@@ -382,6 +400,8 @@ export default function Dashboard() {
                             </div>
                         </Container>
 
+                        <hr className="break1" />
+
                         <Container
                             className="d-flex align-items-center justify-content-center"
                             style={{ minHeight: "25vh" }}
@@ -390,7 +410,7 @@ export default function Dashboard() {
                                 className="w-100"
                                 style={{ maxWidth: "450px" }}
                             >
-                                <Card>
+                                <Card className="container-darkmode">
                                     <Card.Body>
                                         <h2 className="text-center mb-4">Create project</h2>
                                         {createError && <Alert variant="danger">{createError}</Alert>}
@@ -398,11 +418,11 @@ export default function Dashboard() {
                                         <Form onSubmit={handleProjectCreating}>
                                             <Form.Group id="create_project">
                                                 <Form.Label>Enter a project name</Form.Label>
-                                                <Form.Control type="text" ref={createNameRef} required />
+                                                <Form.Control type="text" ref={createNameRef} required placeholder="Name" />
                                                 <Form.Label>Enter a project description</Form.Label>
-                                                <Form.Control type="text" ref={createDescriptionRef} required />
+                                                <Form.Control type="text" ref={createDescriptionRef} required placeholder="Description" />
                                                 <Form.Label>Enter a project ID</Form.Label>
-                                                <Form.Control type="text" ref={createIDRef} required />
+                                                <Form.Control type="text" ref={createIDRef} required placeholder="Positive number" />
                                                 <Form.Label></Form.Label>
                                             </Form.Group>
                                             <Button disabled={createLoading} className="w-100" type="submit">Create project</Button>
@@ -428,16 +448,31 @@ export default function Dashboard() {
 
             <div className="container">
                 <div className="row">
-                    <div className="white-font className=overflow-auto col-sm">
+                    <div className="white-font overflow-auto col-sm"
+                        style={{
+                            maxHeight: "600px",
+                            minWidth: "800px"
+                        }}>
                         <h1>
                             Available Hardware Sets:
                         </h1>
-                        {currentSets.map(set => (
-                            <HWSet key={set.name}
-                                name={set.name}
-                                capacity={set.capacity}
-                                availability={set.availability} />
-                        ))}
+                        <table className="table table-dark table-striped table-bordered">
+                            <thead>
+                                <tr class="table-primary">
+                                    <th>Name</th>
+                                    <th>Capacity</th>
+                                    <th>Availability</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {currentSets.map(set => (
+                                    <HWSet key={set.name}
+                                        name={set.name}
+                                        capacity={set.capacity}
+                                        availability={set.availability} />
+                                ))}
+                            </tbody>
+                        </table>
                     </div>
 
                     <div className="col-sm">
@@ -450,7 +485,7 @@ export default function Dashboard() {
                                 className="w-100"
                                 style={{ maxWidth: "450px" }}
                             >
-                                <Card>
+                                <Card className="container-darkmode">
                                     <Card.Body>
                                         <h2 className="text-center mb-4">Checkout hardware</h2>
                                         {checkoutError && <Alert variant="danger">{checkoutError}</Alert>}
@@ -458,11 +493,11 @@ export default function Dashboard() {
                                         <Form onSubmit={handleCheckout}>
                                             <Form.Group id="checkout">
                                                 <Form.Label>Enter a project ID</Form.Label>
-                                                <Form.Control type="text" ref={checkoutIDRef} required />
+                                                <Form.Control type="text" ref={checkoutIDRef} required placeholder="ID" />
                                                 <Form.Label>Enter a hardware set name</Form.Label>
-                                                <Form.Control type="text" ref={checkoutNameRef} required />
+                                                <Form.Control type="text" ref={checkoutNameRef} required placeholder="Set name" />
                                                 <Form.Label>Enter an amount</Form.Label>
-                                                <Form.Control type="text" ref={checkoutAmountRef} required />
+                                                <Form.Control type="text" ref={checkoutAmountRef} required placeholder="Amount to check out" />
                                                 <Form.Label></Form.Label>
                                             </Form.Group>
                                             <Button disabled={checkoutLoading} className="w-100" type="submit">Checkout</Button>
@@ -473,6 +508,8 @@ export default function Dashboard() {
                             </div>
                         </Container>
 
+                        <hr className="break2" />
+
                         <Container
                             className="d-flex align-items-center justify-content-center"
                             style={{ minHeight: "25vh" }}
@@ -481,22 +518,22 @@ export default function Dashboard() {
                                 className="w-100"
                                 style={{ maxWidth: "450px" }}
                             >
-                                <Card>
+                                <Card className="container-darkmode">
                                     <Card.Body>
-                                        <h2 className="text-center mb-4">Checkin hardware</h2>
+                                        <h2 className="text-center mb-4">Check-in hardware</h2>
                                         {checkinError && <Alert variant="danger">{checkinError}</Alert>}
                                         {checkinMessage && <Alert variant="success">{checkinMessage}</Alert>}
                                         <Form onSubmit={handleCheckin}>
                                             <Form.Group id="checkout">
                                                 <Form.Label>Enter a project ID</Form.Label>
-                                                <Form.Control type="text" ref={checkinIDRef} required />
+                                                <Form.Control type="text" ref={checkinIDRef} required placeholder="ID" />
                                                 <Form.Label>Enter a hardware set name</Form.Label>
-                                                <Form.Control type="text" ref={checkinNameRef} required />
+                                                <Form.Control type="text" ref={checkinNameRef} required placeholder="Set name" />
                                                 <Form.Label>Enter an amount</Form.Label>
-                                                <Form.Control type="text" ref={checkinAmountRef} required />
+                                                <Form.Control type="text" ref={checkinAmountRef} required placeholder="Amount to check in" />
                                                 <Form.Label></Form.Label>
                                             </Form.Group>
-                                            <Button disabled={checkinLoading} className="w-100" type="submit">Checkin</Button>
+                                            <Button disabled={checkinLoading} className="w-100" type="submit">Check-in</Button>
                                         </Form>
 
                                     </Card.Body>
@@ -523,56 +560,56 @@ export default function Dashboard() {
 
                     <h1 className="white-font">Available Datasets:</h1>
 
-                    <h3 className="white-font">
-                        Blood Pressure in Salt-Sensitive Dahl Rats
-                    </h3>
-                    <p className="white-font">This database contains continuous blood pressure recordings for 9 Dahl SS rats and 6 Dahl SS.13BN rats, under high and low salt conditions.</p>
-                    <p className="white-font">
-                        <a href="https://physionet.org/static/published-projects/bpssrat/blood-pressure-in-salt-sensitive-dahl-rats-1.0.0.zip">
-                            Download (3.4MB)
-                        </a>
-                    </p>
-
-                    <h3 className="white-font">
-                        Gait in Aging and Disease Database
-                    </h3>
-                    <p className="white-font">Walking stride interval time series from 15 subjects.</p>
-                    <p className="white-font">
-                        <a href="https://physionet.org/static/published-projects/gaitdb/gait-in-aging-and-disease-database-1.0.0.zip">
-                            Download (354.6KB)
-                        </a>
-                    </p>
-
-                    <h3 className="white-font">
-                        Long Term AF Database
-                    </h3>
-                    <p className="white-font">This database includes 84 long-term ECG recordings of subjects with paroxysmal or sustained atrial fibrillation (AF). Each record contains two simultaneously recorded ECG signals digitized at 128 Hz …</p>
-                    <p className="white-font">
-                        <a href="https://physionet.org/static/published-projects/ltafdb/long-term-af-database-1.0.0.zip">
-                            Download (1.7GB)
-                        </a>
-                    </p>
-
-                    <h3 className="white-font">
-                        MIT-BIH Arrhythmia Database
-                    </h3>
-                    <p className="white-font">Two-channel ambulatory ECG recordings, obtained from 47 subjects studied by the BIH Arrhythmia Laboratory between 1975 and 1979. </p>
-                    <p className="white-font">
-                        <a href="https://physionet.org/static/published-projects/mitdb/mit-bih-arrhythmia-database-1.0.0.zip">
-                            Download (73.5MB)
-                        </a>
-                    </p>
-
-                    <h3 className="white-font">
-                        MMG Database
-                    </h3>
-                    <p className="white-font">Uterine magnetomyographic signals from 25 subjects recorded using a 151 channel Reproductive Assessment system.</p>
-                    <p className="white-font">
-                        <a href="https://physionet.org/static/published-projects/mmgdb/mmg-database-1.0.0.zip">
-                            Download (215.7MB)
-                        </a>
-                    </p>
-
+                    <table className="table table-dark table-striped table-bordered white-font overflow-auto center"
+                        style={{
+                            maxHeight: "600px",
+                            maxWidth: "1272px"
+                        }}>
+                        <thead>
+                            <tr class="table-primary">
+                                <th>Name</th>
+                                <th>Description</th>
+                                <th>Download</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Blood Pressure in Salt-Sensitive Dahl Rats</td>
+                                <td>This database contains continuous blood pressure recordings for 9 Dahl SS rats and 6 Dahl SS.13BN rats, under high and low salt conditions.</td>
+                                <td><a href="https://physionet.org/static/published-projects/bpssrat/blood-pressure-in-salt-sensitive-dahl-rats-1.0.0.zip">
+                                    Download (3.4MB)
+                                </a></td>
+                            </tr>
+                            <tr>
+                                <td>Gait in Aging and Disease Database</td>
+                                <td>Walking stride interval time series from 15 subjects.</td>
+                                <td><a href="https://physionet.org/static/published-projects/gaitdb/gait-in-aging-and-disease-database-1.0.0.zip">
+                                    Download (354.6KB)
+                                </a></td>
+                            </tr>
+                            <tr>
+                                <td>Long Term AF Database</td>
+                                <td>This database includes 84 long-term ECG recordings of subjects with paroxysmal or sustained atrial fibrillation (AF). Each record contains two simultaneously recorded ECG signals digitized at 128 Hz …</td>
+                                <td><a href="https://physionet.org/static/published-projects/ltafdb/long-term-af-database-1.0.0.zip">
+                                    Download (1.7GB)
+                                </a></td>
+                            </tr>
+                            <tr>
+                                <td>MIT-BIH Arrhythmia Database</td>
+                                <td>Two-channel ambulatory ECG recordings, obtained from 47 subjects studied by the BIH Arrhythmia Laboratory between 1975 and 1979.</td>
+                                <td><a href="https://physionet.org/static/published-projects/mitdb/mit-bih-arrhythmia-database-1.0.0.zip">
+                                    Download (73.5MB)
+                                </a></td>
+                            </tr>
+                            <tr>
+                                <td>MMG Database</td>
+                                <td>Uterine magnetomyographic signals from 25 subjects recorded using a 151 channel Reproductive Assessment system.</td>
+                                <td><a href="https://physionet.org/static/published-projects/mmgdb/mmg-database-1.0.0.zip">
+                                    Download (215.7MB)
+                                </a></td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </Container>
             </div>
 
@@ -592,7 +629,7 @@ export default function Dashboard() {
                     className="w-100"
                     style={{ maxWidth: "450px" }}
                 >
-                    <Card>
+                    <Card className="container-darkmode">
                         <Card.Body>
                             <h2 className="text-center mb-4">Profile</h2>
                             {error && <Alert variant="danger">{error}</Alert>}

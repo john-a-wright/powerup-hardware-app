@@ -46,33 +46,34 @@ export default function SignUp() {
                         style={{ maxWidth: "450px" }}
                     >
 
-                        <Card>
+                        <Card className="container-darkmode">
                             <Card.Body>
                                 <h2 className="text-center mb-4">Sign Up</h2>
+
+                                {error && <Alert variant="danger">{error}</Alert>}
+                                <Form onSubmit={handleSubmit}>
+                                    <Form.Group id="email">
+                                        <Form.Label>Email</Form.Label>
+                                        <Form.Control type="email" ref={emailRef} required />
+                                    </Form.Group>
+                                    <Form.Group id="password">
+                                        <Form.Label>Password</Form.Label>
+                                        <Form.Control type="password" ref={passwordRef} required />
+                                    </Form.Group>
+                                    <Form.Group id="password-confirm">
+                                        <Form.Label>Password Confirmation</Form.Label>
+                                        <Form.Control type="password" ref={passwordConfirmRef} required />
+                                        <Form.Label></Form.Label>
+                                    </Form.Group>
+
+                                    <Button disabled={loading} className="w-100" type="submit">Sign up</Button>
+
+                                </Form>
                             </Card.Body>
-                            {error && <Alert variant="danger">{error}</Alert>}
-                            <Form onSubmit={handleSubmit}>
-                                <Form.Group id="email">
-                                    <Form.Label>Email</Form.Label>
-                                    <Form.Control type="email" ref={emailRef} required />
-                                </Form.Group>
-                                <Form.Group id="password">
-                                    <Form.Label>Password</Form.Label>
-                                    <Form.Control type="password" ref={passwordRef} required />
-                                </Form.Group>
-                                <Form.Group id="password-confirm">
-                                    <Form.Label>Password Confirmation</Form.Label>
-                                    <Form.Control type="password" ref={passwordConfirmRef} required />
-                                    <Form.Label></Form.Label>
-                                </Form.Group>
-
-                                <Button disabled={loading} className="w-100" type="submit">Sign up</Button>
-
-                            </Form>
-                            <div className="w-100 text center mt-2">
-                                Already have an account? <Link to="/">Log In</Link>
-                            </div>
                         </Card>
+                        <div className="w-100 text center mt-2 white-font">
+                            Already have an account? <Link to="/">Log In</Link>
+                        </div>
 
                     </div>
                 </Container>

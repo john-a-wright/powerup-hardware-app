@@ -1,27 +1,43 @@
 import React from 'react'
-import { Container } from 'react-bootstrap'
 
 export function Project(props) {
     return (
-        <Container className="d-flex align-items-center justify-content-center">
-            <div
-                className="w-100"
-                style={{ maxWidth: "450px" }}
-            >
-                <h3>{props.name}</h3>
-                <p>Project ID: {props.id}</p>
-                <p>Description: {props.description}</p>
+        <tr>
+            <td>{props.name}</td>
+            <td>{props.id}</td>
+            <td>{props.description}</td>
 
-                <strong>Current hardware:</strong>
-                {props.HWSets.map(set => (
-                    <p key={set[0]}>{set[0]}: {set[1]}</p>
-                ))}
+            {concatinateHWSets(props.HWSets)}
 
-                <strong>Users:</strong>
-                {props.users.map(u => (
-                    <p key={u}>{u}</p>
-                ))}
-            </div>
-        </Container>
+            {concatinateUsers(props.users)}
+        </tr>
+    )
+}
+
+function concatinateUsers(array){
+    let buffer = []
+
+    array.map(item =>{
+        buffer.push(<div>{item}</div>)
+    })
+
+    return (
+        <td>
+            {buffer}
+        </td>
+    )
+}
+
+function concatinateHWSets(array){
+    let buffer = []
+
+    array.map(set => {
+        buffer.push(<div>{set[0]}: {set[1]}</div>)
+    })
+
+    return (
+        <td>
+            {buffer}
+        </td>
     )
 }
