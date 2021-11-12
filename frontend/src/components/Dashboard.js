@@ -345,7 +345,7 @@ export default function Dashboard() {
                             minWidth: "800px"
                         }}>
                         <h1>
-                            Your projects:
+                            Your projects
                         </h1>
 
                         <table className="table table-dark table-striped table-bordered">
@@ -454,7 +454,7 @@ export default function Dashboard() {
                             minWidth: "800px"
                         }}>
                         <h1>
-                            Available Hardware Sets:
+                            Available Hardware Sets
                         </h1>
                         <table className="table table-dark table-striped table-bordered">
                             <thead>
@@ -558,7 +558,7 @@ export default function Dashboard() {
                     style={{ minHeight: "25vh" }}
                 >
 
-                    <h1 className="white-font">Available Datasets:</h1>
+                    <h1 className="white-font">Available Datasets</h1>
 
                     <table className="table table-dark table-striped table-bordered white-font overflow-auto center"
                         style={{

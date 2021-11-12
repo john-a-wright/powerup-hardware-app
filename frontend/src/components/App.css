@@ -60,6 +60,7 @@
 
 .container-darkmode {
   color: white;
+  border-color:#0205a4!important;
   background-color: rgb(31, 31, 34)!important;
 }
 
@@ -73,4 +74,25 @@ hr.break1{
 
 hr.break2{
   margin: 6px;
+}
+
+.aboutText{
+  color: white;
+  text-align: left;
+}
+
+.aboutCard {
+  color: white;
+  background-color: rgb(31, 31, 34)!important;
+}
+
+.aboutCardBlue {
+  color: white;
+  border-color:#0205a4!important;
+  background-color: rgb(31, 31, 34)!important;
+}
+
+.contactList {
+  background: rgb(31, 31, 34)!important;
+  color: white!important;
 }

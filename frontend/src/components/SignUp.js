@@ -39,7 +39,7 @@ export default function SignUp() {
             <header>
                 <Container
                     className="d-flex align-items-center justify-content-center"
-                    style={{ minHeight: "100vh" }}
+                    style={{ minHeight: "91vh" }}
                 >
                     <div
                         className="w-100"
@@ -54,15 +54,15 @@ export default function SignUp() {
                                 <Form onSubmit={handleSubmit}>
                                     <Form.Group id="email">
                                         <Form.Label>Email</Form.Label>
-                                        <Form.Control type="email" ref={emailRef} required />
+                                        <Form.Control type="email" ref={emailRef} required placeholder="Email"/>
                                     </Form.Group>
                                     <Form.Group id="password">
                                         <Form.Label>Password</Form.Label>
-                                        <Form.Control type="password" ref={passwordRef} required />
+                                        <Form.Control type="password" ref={passwordRef} required placeholder="Password (at least 6 characters)"/>
                                     </Form.Group>
                                     <Form.Group id="password-confirm">
                                         <Form.Label>Password Confirmation</Form.Label>
-                                        <Form.Control type="password" ref={passwordConfirmRef} required />
+                                        <Form.Control type="password" ref={passwordConfirmRef} required placeholder="Confirm passsword"/>
                                         <Form.Label></Form.Label>
                                     </Form.Group>
 

@@ -25,8 +25,8 @@ mongo_uri = os.environ['MONGODB_URI']
 mongoClient = MongoClient(mongo_uri)
 
 # CLIENT SIDE
-#mongo_uri = "mongodb+srv://powerup:fig@cluster0.oemnt.mongodb.net/powerup-hardware?retryWrites=true"
-#mongoClient = MongoClient(mongo_uri,ssl_cert_reqs=ssl.CERT_NONE)
+mongo_uri = "mongodb+srv://powerup:fig@cluster0.oemnt.mongodb.net/powerup-hardware?retryWrites=true"
+mongoClient = MongoClient(mongo_uri,ssl_cert_reqs=ssl.CERT_NONE)
 
 
 # Get database
