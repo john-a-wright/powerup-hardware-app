@@ -39,34 +39,41 @@ class App extends Component {
 
     render() {
         return (
-            <div className="App">
+            <>
+                <head>
 
-                <h1 className="gradient-text">
-                    PowerUp Hardware
-                </h1>
+                    <title>PowerUp Hardware</title>
 
-                <hr
-                    style={{
-                    color: 'blue',
-                    backgroundColor: 'blue',
-                    height: 10
-                }}/>
+                </head>
 
-                <Router>
-                    <AuthProvider>
-                        <Switch>
-                            <PrivateRoute exact path="/dashboard" component={Dashboard} />
-                            <PrivateRoute path="/update-profile" component={UpdateProfile} />
-                            <Route path="/signup" component={SignUp} />
-                            <Route path="/forgot-password" component={ForgotPassword} />
-                            <Route path="/" component={Login} />
-                            <Route path="/login" component={Login} />
-                        </Switch>
-                    </AuthProvider>
-                </Router>
+                <div className="App">
 
-            </div>
+                    <h1 className="gradient-text">
+                        PowerUp Hardware
+                    </h1>
 
+                    <hr
+                        style={{
+                            color: 'blue',
+                            backgroundColor: 'blue',
+                            height: 10
+                        }} />
+
+                    <Router>
+                        <AuthProvider>
+                            <Switch>
+                                <PrivateRoute exact path="/dashboard" component={Dashboard} />
+                                <PrivateRoute path="/update-profile" component={UpdateProfile} />
+                                <Route path="/signup" component={SignUp} />
+                                <Route path="/forgot-password" component={ForgotPassword} />
+                                <Route path="/" component={Login} />
+                                <Route path="/login" component={Login} />
+                            </Switch>
+                        </AuthProvider>
+                    </Router>
+
+                </div>
+            </>
 
         );
     }
