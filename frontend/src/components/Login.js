@@ -78,6 +78,8 @@ export default function Login() {
                                         <li class="list-group-item contactList">Human Resources: John Wright <br/> - johnawright@utexas.edu</li>
                                         <li class="list-group-item contactList">Talent Accquistion: Ryan McSweeney <br/> - rmcsweeney@utexas.edu</li>
                                         <li class="list-group-item contactList">University Relations: Sophia Jiang <br/> - sopjiang@utexas.edu</li>
+                                        <li class="list-group-item contactList">Customer Service: Jeesoo Min <br/> - alswltn@utexas.edu</li>
+                                        <li class="list-group-item contactList">Quality Assurance: Emran Khan <br/> - emran.khan@utexas.edu</li>
                                     </ul>
                                 </div>
                             </div>
