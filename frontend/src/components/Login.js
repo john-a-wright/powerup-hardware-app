@@ -42,7 +42,8 @@ export default function Login() {
                     >
                         <div
                             className="w-100"
-                            style={{ maxWidth: "450px" }}
+                            style={{ maxWidth: "450px",
+                                     minWidth: "450px" }}
                         >
 
                             <div class="card aboutCardBlue">
@@ -74,7 +75,9 @@ export default function Login() {
                                 </div>
                                 <div class="card-body">
                                     <ul class="list-group aboutText">
-                                        <li class="list-group-item contactList">John Wright - johnawright@utexas.edu</li>
+                                        <li class="list-group-item contactList">Human Resources: John Wright <br/> - johnawright@utexas.edu</li>
+                                        <li class="list-group-item contactList">Talent Accquistion: Ryan McSweeney <br/> - rmcsweeney@utexas.edu</li>
+                                        <li class="list-group-item contactList">Univserity Relations: Sophia Jiang <br/> - sopjiang@utexas.edu</li>
                                     </ul>
                                 </div>
                             </div>
@@ -90,7 +93,8 @@ export default function Login() {
                     >
                         <div
                             className="w-100"
-                            style={{ maxWidth: "450px" }}
+                            style={{ maxWidth: "450px",
+                                     minWidth: "450px" }}
                         >
 
                             <Card className="container-darkmode">

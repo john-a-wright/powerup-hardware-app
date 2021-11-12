@@ -17,7 +17,6 @@ app = Flask(__name__, static_folder="frontend/build", static_url_path="")
 # comment out when building for server
 #CORS(app)
 
-
 # Get MongoDB client
 
 # HEROKU
@@ -68,6 +67,13 @@ def checkout_hwset():
         print(request.json)
 
         userEmail = request.json["user"]
+
+        amount = request.json["amount"]
+        if amount.isdigit() == False:
+            return jsonify(
+                status=-1,
+                error="Please enter a valid positive amount"
+            )
 
         # make sure project exits
         for p in projects_col.find():
@@ -162,6 +168,13 @@ def checkin_hwset():
         print(request.json)
 
         userEmail = request.json["user"]
+
+        amount = request.json["amount"]
+        if amount.isdigit() == False:
+            return jsonify(
+                status=-1,
+                error="Please enter a valid positive amount"
+            )
 
         # make sure project exits
         for p in projects_col.find():
@@ -277,6 +290,13 @@ def create_projects():
     try:
         print(request.json)
 
+        id = request.json["id"]
+        if id.isdigit() == False:
+            return jsonify(
+                status=-1,
+                error="Please enter a valid positive ID"
+            )
+
         for p in projects_col.find():
             if int(p["id"]) == int(request.json["id"]):
                 return jsonify(
@@ -319,6 +339,13 @@ def join_projects():
     try:
         print(request.json)
         id = request.json["projectid"]
+
+        if id.isdigit() == False:
+            return jsonify(
+                status=-1,
+                error="Please enter a valid positive ID"
+            )
+
         email = request.json["user"]
         #print(f'user joining project with id: {id} by user: {email}')
 
