@@ -14,6 +14,7 @@ export default function SignUp() {
     const [loading, setLoading] = useState('')
     const history = useHistory()
 
+    // button action for signup
     async function handleSubmit(e) {
         e.preventDefault()
 

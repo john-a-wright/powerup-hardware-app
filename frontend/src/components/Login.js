@@ -14,6 +14,7 @@ export default function Login() {
     const [loading, setLoading] = useState('')
     const history = useHistory()
 
+    // click action for the login button
     async function handleSubmit(e) {
         e.preventDefault()
 

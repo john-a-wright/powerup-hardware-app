@@ -14,6 +14,7 @@ export default function UpdateProfile() {
     const [loading, setLoading] = useState('')
     const history = useHistory()
 
+    // button action for updating profile
     function handleSubmit(e) {
         e.preventDefault()
 

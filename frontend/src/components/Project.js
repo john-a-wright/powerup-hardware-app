@@ -1,3 +1,5 @@
+// simple wrapper for formatting projects in the table
+
 import React from 'react'
 
 export function Project(props) {

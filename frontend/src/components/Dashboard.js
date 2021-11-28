@@ -8,6 +8,7 @@ import { HWSet } from './HWSet'
 
 export default function Dashboard() {
 
+    // overhead state variables for maintaining updated dashboard
     const [error, setError] = useState()
     const { currentUser, logout } = useAuth()
     const { history } = useHistory()
@@ -15,18 +16,21 @@ export default function Dashboard() {
     const [currentSets, setCurrentSets] = useState([]);
     const [userProjects, setUserProjects] = useState([]);
 
+    // set hardware sets through state variable
     const loopHWSets = (jsondata) => {
         for (const [index, value] of jsondata["sets"].entries()) {
             setCurrentSets(currentSets => [...currentSets, value])
         }
     }
 
+    // set user projects through state variable
     const displayProjects = (jsondata) => {
         for (const [index, value] of jsondata["userProjects"].entries()) {
             setUserProjects(userProjects => [...userProjects, value])
         }
     }
 
+    // update 1 hardware set through state variable
     const updateSet = (data) => {
         var i;
         var j;
@@ -49,6 +53,7 @@ export default function Dashboard() {
         setCurrentSets(updatedSets)
     }
 
+    // update 1 user project through state variable
     const updateProject = (data) => {
         var i;
         var j;
@@ -71,6 +76,7 @@ export default function Dashboard() {
         setUserProjects(updatedProjects)
     }
 
+    // logout button action
     async function handleLogout() {
         setError('')
         try {
@@ -81,6 +87,7 @@ export default function Dashboard() {
         }
     }
 
+    // update hw sets with api
     const getCurrentSets = () => {
         const url = process.env.REACT_APP_URL_PREFIX + "/api/dashboard/hardware";
         console.log(url);
@@ -92,6 +99,7 @@ export default function Dashboard() {
             });
     };
 
+    // update users projects with api
     const getUserProjects = () => {
         const url = process.env.REACT_APP_URL_PREFIX + "/api/dashboard/projects/" + currentUser.email;
         console.log(url);
@@ -103,6 +111,7 @@ export default function Dashboard() {
             });
     };
 
+    // 
     useEffect(() => {
 
         getCurrentSets();
@@ -334,7 +343,7 @@ export default function Dashboard() {
     // END CHECKIN
 
 
-
+    // code for actually returning what react will render when dashboard component is needed
     return (
         <>
             <div className="container">

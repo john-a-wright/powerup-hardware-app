@@ -1,3 +1,4 @@
+// simple wrapper for formatting hwsets in the table
 import React from 'react'
 
 export function HWSet(props) {

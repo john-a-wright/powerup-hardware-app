@@ -17,26 +17,9 @@ class App extends Component {
             names: [],
             loading: true
         };
-
-        this.handleChange = this.handleChange.bind(this);
-        this.handleSubmit = this.handleSubmit.bind(this);
     }
 
-    handleChange(event) {
-        this.setState({ name: event.target.value });
-    }
-
-    async handleSubmit(event) {
-        event.preventDefault();
-        this.setState({
-            loading: true,
-        })
-        await fetch('/addname/' + this.state.name, {
-            method: 'GET'
-        });
-        this.getNames()
-    }
-
+    // rendering the whole site
     render() {
         return (
             <>

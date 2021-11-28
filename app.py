@@ -1,12 +1,16 @@
-#from flask_cors import CORS
+# -----=====Imports and Overhead=====-----
+
 from flask import Flask, jsonify, request
 from flask.helpers import send_from_directory
-
 from pymongo import MongoClient
 
-# DONT FORGET TO EDIT .ENV BEFORE NPM RUN BUILD
+# In order to deploy to Heroku (do the opposite for running on client):
+# 1. Comment out both CORS lines
+# 2. Comment out import ssl and uncomment import os
+# 3. Comment out the client side pymongo lines and uncomment Heroku lines
+# 4. Change top line in .env to REACT_APP_URL_PREFIX = 'https://powerup-hardware-app.herokuapp.com'
 
-# DONT NEED SSL FOR SERVER BUT DO NEED OS
+#from flask_cors import CORS
 
 #import ssl
 import os
@@ -17,8 +21,6 @@ app = Flask(__name__, static_folder="frontend/build", static_url_path="")
 # comment out when building for server
 #CORS(app)
 
-# Get MongoDB client
-
 # HEROKU
 mongo_uri = os.environ['MONGODB_URI']
 mongoClient = MongoClient(mongo_uri)
@@ -27,6 +29,7 @@ mongoClient = MongoClient(mongo_uri)
 #mongo_uri = "mongodb+srv://powerup:fig@cluster0.oemnt.mongodb.net/powerup-hardware?retryWrites=true"
 #mongoClient = MongoClient(mongo_uri,ssl_cert_reqs=ssl.CERT_NONE)
 
+# -----=====Actual code starts here=====-----
 
 # Get database
 powerup_db = mongoClient.get_database('powerup-hardware')
@@ -63,6 +66,7 @@ def get_hwsets():
 @app.route('/api/dashboard/hardware/checkout', methods=['POST'])
 def checkout_hwset():
 
+    # use try/catch incase there is an issue with reading request from clients 
     try:
         print(request.json)
 
@@ -81,7 +85,6 @@ def checkout_hwset():
                 for user in p["users"]:
                     if user == userEmail:
                         # found project and user is joined
-
                         id = str(request.json["id"])
                         hwset_name = request.json["hwset"]
                         amount = int(request.json["amount"])
@@ -98,6 +101,8 @@ def checkout_hwset():
                                         error="No availability for the amount requested"
                                     )
 
+
+                                # update hardware set in mongodb
                                 newAvailability = int(set["availability"]) - amount
 
                                 hw_sets_col.update_one({ "name" : set["name"] },{ "$set": { "availability": newAvailability } })
@@ -119,7 +124,7 @@ def checkout_hwset():
                                 projects_col.update_one({ "id" : id },{ "$set": { "checkedOutHW": newCheckedOutHW } })
                                 #print('successfully updated database project')
 
-                                # figure out how to update the hardware set and project on client => useEffect probably
+                                # return newly updated project to user
                                 returnedSet = hw_sets_col.find_one({ "name" : request.json["hwset"] })
                                 returnedProject = projects_col.find_one({ "id" : id })
 
@@ -213,13 +218,14 @@ def checkin_hwset():
                                 newCheckedOutHW = updatingProject["checkedOutHW"]
                                 newCheckedOutHW[checkedOutHWIndex][1] = newAmountCheckedOut
 
+                                # update project and hardware set in mongodb
                                 projects_col.update_one({ "id" : id },{ "$set": { "checkedOutHW": newCheckedOutHW } })
-
 
                                 newAvailability = int(set["availability"]) + amount
 
                                 hw_sets_col.update_one({ "name" : set["name"] },{ "$set": { "availability": newAvailability } })
 
+                                # return newly updated project to user
                                 returnedSet = hw_sets_col.find_one({ "name" : request.json["hwset"] })
                                 returnedProject = projects_col.find_one({ "id" : id })
 
@@ -290,6 +296,7 @@ def create_projects():
     try:
         print(request.json)
 
+        # ensure id is a valaid positive number
         id = request.json["id"]
         if id.isdigit() == False:
             return jsonify(
@@ -297,6 +304,7 @@ def create_projects():
                 error="Please enter a valid positive ID"
             )
 
+        # make sure project id is unique
         for p in projects_col.find():
             if int(p["id"]) == int(request.json["id"]):
                 return jsonify(
@@ -304,6 +312,7 @@ def create_projects():
                     error="Project ID has already been used"
                 )
 
+        # create new project
         newProject = {
             "id" : request.json["id"],
             "name" : request.json["name"],
@@ -340,6 +349,7 @@ def join_projects():
         print(request.json)
         id = request.json["projectid"]
 
+        # ensure id is a valaid positive number
         if id.isdigit() == False:
             return jsonify(
                 status=-1,
@@ -361,6 +371,7 @@ def join_projects():
                         )
                 oldUsers = p["users"]
                 oldUsers.append(email)
+
                 # add user to project
                 projects_col.update_one({ "id" : p["id"] },{ "$set": { "users": oldUsers } })
 
@@ -411,8 +422,6 @@ def index_forgor_password():
 @app.route("/login")
 def index_login():
     return send_from_directory(app.static_folder, "index.html")
-
-
 
 if __name__ == '__main__':
     app.run(host="0.0.0.0")
