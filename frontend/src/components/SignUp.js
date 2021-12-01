@@ -36,7 +36,7 @@ export default function SignUp() {
 
     return (
         <>
-
+            {/*sign up component*/}
             <header>
                 <Container
                     className="d-flex align-items-center justify-content-center"
@@ -46,7 +46,7 @@ export default function SignUp() {
                         className="w-100"
                         style={{ maxWidth: "450px" }}
                     >
-
+                        {/*card to hold the form*/}
                         <Card className="container-darkmode">
                             <Card.Body>
                                 <h2 className="text-center mb-4">Sign Up</h2>

@@ -346,8 +346,12 @@ export default function Dashboard() {
     // code for actually returning what react will render when dashboard component is needed
     return (
         <>
+            {/* fragment to hold all the divs*/}
             <div className="container">
+
+                {/*project display section*/}
                 <div className="row">
+
                     <div className="white-font overflow-auto col-sm"
                         style={{
                             maxHeight: "600px",
@@ -357,6 +361,7 @@ export default function Dashboard() {
                             Your projects
                         </h1>
 
+                        {/*user project display table*/}
                         <table className="table table-dark table-striped table-bordered table-format">
                             <thead>
                                 <tr class="table-format">
@@ -380,6 +385,8 @@ export default function Dashboard() {
                         </table>
 
                     </div>
+
+                    {/*column for joining and creating project forms*/}
                     <div className="col-sm">
 
                         <Container
@@ -447,6 +454,7 @@ export default function Dashboard() {
                 </div>
             </div>
 
+            {/*blue horizontal line*/}
             <hr
                 style={{
                     color: 'blue',
@@ -455,8 +463,11 @@ export default function Dashboard() {
                 }}
             />
 
+            {/*hardset set section of dashboard*/}
             <div className="container">
                 <div className="row">
+
+                    {/*column for displaying hardware sets*/}
                     <div className="white-font overflow-auto col-sm"
                         style={{
                             maxHeight: "600px",
@@ -465,6 +476,7 @@ export default function Dashboard() {
                         <h1>
                             Available Hardware Sets
                         </h1>
+                        {/*hardware set table display*/}
                         <table className="table table-dark table-striped table-bordered table-format">
                             <thead>
                                 <tr class="table-format">
@@ -484,6 +496,7 @@ export default function Dashboard() {
                         </table>
                     </div>
 
+                    {/*column for hardware checkout/in cards*/}
                     <div className="col-sm">
 
                         <Container
@@ -553,6 +566,7 @@ export default function Dashboard() {
                 </div>
             </div>
 
+            {/*blue horizontal line*/}
             <hr
                 style={{
                     color: 'blue',
@@ -561,6 +575,7 @@ export default function Dashboard() {
                 }}
             />
 
+            {/*dataset display section of dashboard*/}
             <div>
                 <Container
                     className="align-items-center justify-content-center"
@@ -622,6 +637,7 @@ export default function Dashboard() {
                 </Container>
             </div>
 
+            {/*blue horizontal line*/}
             <hr
                 style={{
                     color: 'blue',
@@ -630,6 +646,7 @@ export default function Dashboard() {
                 }}
             />
 
+            {/*log out section of the dashboard*/}
             <Container
                 className="d-flex align-items-center justify-content-center"
                 style={{ minHeight: "25vh" }}

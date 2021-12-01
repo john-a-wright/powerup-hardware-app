@@ -25,10 +25,12 @@ class App extends Component {
             <>
                 <div className="App login-overflow">
 
+                    {/*header for thw whole website*/}
                     <h1 className="gradient-text">
                         PowerUp Hardware
                     </h1>
 
+                    {/*horizontal bar*/}
                     <hr
                         style={{
                             color: 'blue',
@@ -36,9 +38,11 @@ class App extends Component {
                             height: 10
                         }} />
 
+                    {/*routing to control what user sees below main header*/}
                     <Router>
                         <AuthProvider>
                             <Switch>
+                                {/*actual switch that controls which link corresponds to what component*/}
                                 <PrivateRoute exact path="/dashboard" component={Dashboard} />
                                 <PrivateRoute path="/update-profile" component={UpdateProfile} />
                                 <Route path="/signup" component={SignUp} />

@@ -32,10 +32,14 @@ export default function Login() {
 
     return (
         <>
+            {/*row to divide welcome page into 2 sections*/}
             <div className="row">
+
+                {/*column spacer*/}
                 <div className="col-sm">
                 </div>
 
+                {/*column for abnout us and contact us*/}
                 <div className="col-sm">
                     <Container
                         className="d-flex align-items-center justify-content-center"
@@ -46,7 +50,8 @@ export default function Login() {
                             style={{ maxWidth: "450px",
                                      minWidth: "450px" }}
                         >
-
+                            
+                            {/*About Us section*/}
                             <div class="card aboutCardBlue">
                                 <div class="card-header aboutCardBlue">
                                     <h2 class="card-title">About us</h2>
@@ -70,6 +75,7 @@ export default function Login() {
                                 }}
                             />
 
+                            {/*Contact Us section*/}
                             <div class="card aboutCardBlue">
                                 <div class="card-header aboutCardBlue">
                                     <h2 class="card-title">Contact us</h2>
@@ -89,6 +95,7 @@ export default function Login() {
                     </Container>
                 </div>
 
+                {/*second column which holds the login section*/}
                 <div className="col-sm">
                     <Container
                         className="d-flex align-items-center justify-content-center"
@@ -99,7 +106,8 @@ export default function Login() {
                             style={{ maxWidth: "450px",
                                      minWidth: "450px" }}
                         >
-
+                            
+                            {/*card that holds the form to log in*/}
                             <Card className="container-darkmode">
                                 <Card.Body>
                                     <h2 className="text-center mb-4">Log In</h2>
@@ -133,6 +141,7 @@ export default function Login() {
                     </Container>
                 </div>
 
+                {/*spacer column*/}
                 <div className="col-sm">
                 </div>
 
